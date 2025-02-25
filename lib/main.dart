@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mitask/core/config/config_resources.dart';
+import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/onboarding.dart';
 
 void main() {
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  final GetIt getIt = GetIt.instance;
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<DashboardBloc>(
+          create: (context) => getIt<DashboardBloc>(),
+        ),
+        // Tambahkan provider lain jika diperlukan
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

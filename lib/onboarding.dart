@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
+import 'package:mitask/features/dashboard/presentation/pages/dashboard_screen.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
@@ -17,13 +17,13 @@ class _OnboardingState extends State<Onboarding> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Future.delayed(const Duration(seconds: 4), () {
-    //  Navigator.pushReplacement(
-    //       // ignore: use_build_context_synchronously
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => const DashboardScreen(), 
-    //       ),
-    //     );
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DashboardScreen(),
+        ),
+      );
     });
   }
 
