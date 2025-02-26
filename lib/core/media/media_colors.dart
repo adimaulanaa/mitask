@@ -15,7 +15,7 @@ class AppColors {
   static const Color bgRed = Color(0xFFFF0000);
 
 
-  static const Color primary = Color(0xFF81BFDA);
-  static const Color secondary = Color(0xFF608BC1);
+  static const Color primary = Color(0xFF49B873);
+  static const Color secondary = Color(0xFFE8F7F4);
   static const Color tertiary = Color(0xFFC4D7FF);
 }
