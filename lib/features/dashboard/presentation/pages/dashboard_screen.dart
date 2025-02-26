@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/loading_helpers.dart';
 import 'package:mitask/core/utils/snackbar_extension.dart';
+import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
+import 'package:mitask/features/dashboard/presentation/widgets/view_list.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -22,6 +25,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final ScrollController _scrollController = ScrollController();
   DateTime now = DateTime.now();
   List<DateModel> listDate = [];
+  List<TaskModel> listTask = [];
+  List<TaskModel> viewListTask = [];
   String inDay = '';
   String inDayName = '';
   String inDayTask = '';
@@ -32,6 +37,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     context.read<DashboardBloc>().add(const GetDashboard());
+  }
+
+  void getTask(String date) {
+    context.read<DashboardBloc>().add(GetTask(date: date));
   }
 
   void scrollToToday() {
@@ -59,11 +68,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onNavigate: () {}, // bottom close
               );
             }
+          } else if (state is TaskError) {
+            if (state.error != '') {
+              context.showErrorSnackBar(
+                state.error,
+                onNavigate: () {}, // bottom close
+              );
+            }
           } else if (state is DashboardLoaded) {
             if (state.data.isNotEmpty) {
               listDate = state.data;
               selectedDate(now.day.toString());
               scrollToToday();
+            }
+          } else if (state is TaskLoaded) {
+            if (state.data.isNotEmpty) {
+              listTask = state.data;
+              setViewTask();
+            } else {
+              listTask = [];
+              setViewTask();
             }
           }
         },
@@ -130,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: SvgPicture.asset(
                       MediaRes.addTask,
                       fit: BoxFit.contain,
-                      // width: 20,
+                      width: 20,
                       // ignore: deprecated_member_use
                       color: AppColors.bgBlack,
                     ),
@@ -149,6 +173,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Row(
                   children: listDate.map((e) {
                     return InkWell(
+                      splashFactory: NoSplash.splashFactory,
+                      highlightColor: Colors.transparent,
                       onTap: () => selectedDate(e.date.toString()),
                       child: DateCircle(
                         date: e.date.toString(),
@@ -162,11 +188,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        SizedBox(height: size.height * 0.1),
-        const Center(child: Text('dashboard')),
+        SizedBox(height: size.height * 0.02),
+        // const Center(child: Text('dashboard')),
+        Expanded(
+          child: viewListTask.isNotEmpty
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: viewListTask.map((e) {
+                      return InkWell(
+                        splashFactory: NoSplash.splashFactory,
+                        highlightColor: Colors.transparent,
+                        onTap: () {},
+                        child: ViewList(dt: e, size: size,),
+                      );
+                    }).toList(),
+                  ),
+                )
+              : dataIsEmpty(),
+        ),
+        SizedBox(height: size.height * 0.01),
       ],
     );
   }
+
+  Widget dataIsEmpty() => const Center(
+        child: Text('kosong'),
+      );
 
   Row infoTitleTask(String icon, value, name) {
     return Row(
@@ -217,6 +264,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     inDayTask = setDt[0].taskToday.toString();
     inDayFinishTask = setDt[0].taskFinish.toString();
     inDayPenddingTask = setDt[0].taskPendding.toString();
-    setState(() {});
+    String dates = DateFormat('yyyy-MM-dd').format(setDt[0].dateTime ?? now);
+    getTask(dates);
+  }
+
+  void setViewTask() {
+    viewListTask = [];
+    viewListTask = listTask;
+    // setState(() {});
   }
 }

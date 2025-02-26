@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 abstract class DashboardLocalSource {
   Future<List<DateModel>> dashboard();
+  Future<List<TaskModel>> taskByDate(String date);
 }
 
 class DashboardLocalSourceImpl implements DashboardLocalSource {
@@ -57,5 +58,11 @@ class DashboardLocalSourceImpl implements DashboardLocalSource {
     }
 
     return data;
+  }
+  
+  @override
+  Future<List<TaskModel>> taskByDate(String date) async {
+    List<TaskModel> result = await dbService.getTasksByDate(date);
+    return result;
   }
 }

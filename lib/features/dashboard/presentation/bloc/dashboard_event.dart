@@ -14,3 +14,11 @@ class GetDashboard extends DashboardEvent {
   List<Object> get props => [];
 }
 
+class GetTask extends DashboardEvent {
+  final String date;
+  const GetTask({required this.date});
+
+  @override
+  List<Object> get props => [];
+}
+

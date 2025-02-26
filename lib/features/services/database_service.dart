@@ -87,4 +87,33 @@ class DatabaseService {
       throw Exception('Error: $e');
     }
   }
+
+  Future<List<TaskModel>> getTasksByDate(String date) async {
+    try {
+      final db = await _dBService.database;
+      List<TaskModel> result = [];
+      List<Map<String, dynamic>> res = await db.query(
+        'ms_task',
+        where: "strftime('%Y-%m-%d', created_on) = ?",
+        whereArgs: [date], // Format harus 'YYYY-MM-DD'
+      );
+      for (var e in res) {
+        result.add(
+          TaskModel(
+            id: e['_id']?.toString() ?? '',
+            title: e['title']?.toString() ?? '',
+            subtitle: e['subtitle']?.toString() ?? '',
+            notes: e['notes']?.toString() ?? '',
+            isStatus: e['is_status'] ?? 'false',
+            isType: e['is_type']?.toString() ?? '',
+            createdOn: DateTime.tryParse(e['created_on'].toString()),
+            updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+          ),
+        );
+      }
+      return result;
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }
