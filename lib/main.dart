@@ -4,9 +4,12 @@ import 'package:get_it/get_it.dart';
 import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/onboarding.dart';
+import 'package:mitask/dependency_injection.dart' as di;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // runApp(const MyApp());
+  await di.init();
   final GetIt getIt = GetIt.instance;
   runApp(
     MultiBlocProvider(

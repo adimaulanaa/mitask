@@ -2,7 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart'; // Tambahkan import dartz
 import 'package:mitask/core/error/failures.dart';
-import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
+import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/data/repositories/dashboard_repository.dart';
 import 'bloc.dart';
 
@@ -18,7 +18,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _onDashboard(GetDashboard event, Emitter<DashboardState> emit) async {
     emit(DashboardLoading());
 
-    final Either<Failure, List<DashboardModel>> result =
+    final Either<Failure, List<DateModel>> result =
         await _dashboardRepo.dashboard();
     result.fold(
       (failure) => emit(DashboardError(mapFailureToMessage(failure))),

@@ -3,7 +3,7 @@ class StringResources {
 
   //! Core 
   // http
-  static const String baseUrl = 'https://uat-smart.mcf.co.id';
+  static const String baseUrl = 'https://';
   static const Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
@@ -12,4 +12,5 @@ class StringResources {
   static const int timeOutServer = 120; // for minutes 
   // 
   static const String nameApp = "MiTask"; 
+  static const String loading = "Loading ..."; 
 }
