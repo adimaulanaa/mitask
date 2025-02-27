@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
+import 'package:mitask/features/dashboard/data/models/response_model.dart';
 
 abstract class DashboardState extends Equatable {
   const DashboardState();
@@ -14,6 +15,10 @@ class DashboardInitial extends DashboardState {}
 class DashboardLoading extends DashboardState {}
 
 class TaskLoading extends DashboardState {}
+
+class CreateTaskLoading extends DashboardState {}
+
+class ChecklistLoading extends DashboardState {}
 
 class DashboardError extends DashboardState {
   final String error;
@@ -44,6 +49,40 @@ class TaskError extends DashboardState {
 class TaskLoaded extends DashboardState {
   final List<TaskModel> data;
   const TaskLoaded(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
+class CreateTaskError extends DashboardState {
+  final String error;
+
+  const CreateTaskError(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class CreateTaskSuccess extends DashboardState {
+  final ResponseModel data;
+  const CreateTaskSuccess(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
+class ChecklistError extends DashboardState {
+  final String error;
+
+  const ChecklistError(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class ChecklistSuccess extends DashboardState {
+  final ResponseModel data;
+  const ChecklistSuccess(this.data);
 
   @override
   List<Object> get props => [data];

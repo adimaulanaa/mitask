@@ -6,6 +6,7 @@ class MediaRes {
 
   // ! Core File
   static const logo = '$_baseImage/logo.png';
+  static const arrowBack = '$_baseIcon/arrow-left.svg';
 
   // ! Onboarding
   static const omboarding = '$_baseImage/logo.png';
@@ -14,6 +15,7 @@ class MediaRes {
   static const addTask = '$_baseIcon/add-task.svg';
   static const finishTask = '$_baseIcon/finish-task.svg';
   static const penddingTask = '$_baseIcon/task-pendding.svg';
+  static const task = '$_baseIcon/task.svg';
   static const allTask = '$_baseIcon/all-task.svg';
   static const checklist = '$_baseIcon/checklist.svg';
 

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 
 abstract class DashboardEvent extends Equatable {
   const DashboardEvent();
@@ -17,6 +18,23 @@ class GetDashboard extends DashboardEvent {
 class GetTask extends DashboardEvent {
   final String date;
   const GetTask({required this.date});
+
+  @override
+  List<Object> get props => [];
+}
+
+class CreateTask extends DashboardEvent {
+  final TaskModel data;
+  const CreateTask({required this.data});
+
+  @override
+  List<Object> get props => [];
+}
+
+class Checklist extends DashboardEvent {
+  final String id;
+  final String data;
+  const Checklist({required this.id, required this.data});
 
   @override
   List<Object> get props => [];

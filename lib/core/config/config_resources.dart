@@ -13,4 +13,13 @@ class StringResources {
   // 
   static const String nameApp = "MiTask"; 
   static const String loading = "Loading ..."; 
+
+
+  //! Dashboard 
+  static const String title = "Title..."; 
+  static const String subtitle = "Sub Title..."; 
+  static const String notes = "Notes..."; 
+  static const String type = "Tipe...";
+
+  static String createTask = "Create New Task"; 
 }

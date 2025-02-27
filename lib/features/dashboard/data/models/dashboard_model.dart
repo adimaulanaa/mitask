@@ -7,6 +7,7 @@ class TaskModel {
   String? notes;
   String? isStatus;
   String? isType;
+  DateTime? dateOn;
   DateTime? createdOn;
   DateTime? updatedOn;
 
@@ -17,6 +18,7 @@ class TaskModel {
     this.notes,
     this.isStatus,
     this.isType,
+    this.dateOn,
     this.createdOn,
     this.updatedOn,
   });
@@ -31,6 +33,7 @@ class TaskModel {
       'notes': notes,
       'is_status': isStatus,
       'is_type': isType,
+      'date_on': dateOn.toString(),
       'created_on': createdOn.toString(),
       'updated_on': updatedOn.toString(),
     };
@@ -44,6 +47,7 @@ class TaskModel {
       notes: map['notes'] ?? '',
       isStatus: map['is_status'] ?? 'false',
       isType: map['is_type'] ?? '',
+      dateOn: map['date_on'] != null ? DateTime.parse(map['date_on']) : null,
       createdOn: map['created_on'] != null ? DateTime.parse(map['created_on']) : null,
       updatedOn: map['updated_on'] != null ? DateTime.parse(map['updated_on']) : null,
     );
@@ -56,5 +60,5 @@ class TaskModel {
   // Implement toString to make it easier to see information about
   // each breed when using the print statement.
   @override
-  String toString() => 'user(_id: $id, title: $title, subtitle: $subtitle, notes: $notes, is_status: $isStatus, is_type: $isType, created_on: $createdOn, updated_on: $updatedOn)';
+  String toString() => 'user(_id: $id, title: $title, subtitle: $subtitle, notes: $notes, is_status: $isStatus, is_type: $isType, date_on: $dateOn, created_on: $createdOn, updated_on: $updatedOn)';
 }

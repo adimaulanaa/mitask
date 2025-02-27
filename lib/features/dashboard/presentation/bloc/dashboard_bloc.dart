@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart'; // Tambahkan import dartz
 import 'package:mitask/core/error/failures.dart';
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
+import 'package:mitask/features/dashboard/data/models/response_model.dart';
 import 'package:mitask/features/dashboard/data/repositories/dashboard_repository.dart';
 import 'bloc.dart';
 
@@ -15,6 +16,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         super(DashboardInitial()) {
     on<GetDashboard>(_onDashboard);
     on<GetTask>(_onTask);
+    on<CreateTask>(_onCreateTask);
+    on<Checklist>(_onChecklist);
   }
 
   void _onDashboard(GetDashboard event, Emitter<DashboardState> emit) async {
@@ -36,6 +39,28 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     result.fold(
       (failure) => emit(TaskError(mapFailureToMessage(failure))),
       (success) => emit(TaskLoaded(success)),
+    );
+  }
+
+  void _onCreateTask(CreateTask event, Emitter<DashboardState> emit) async {
+    emit(CreateTaskLoading());
+
+    final Either<Failure, ResponseModel> result =
+        await _dashboardRepo.createTask(event.data);
+    result.fold(
+      (failure) => emit(CreateTaskError(mapFailureToMessage(failure))),
+      (success) => emit(CreateTaskSuccess(success)),
+    );
+  }
+
+  void _onChecklist(Checklist event, Emitter<DashboardState> emit) async {
+    emit(ChecklistLoading());
+
+    final Either<Failure, ResponseModel> result =
+        await _dashboardRepo.checklist(event.id, event.data);
+    result.fold(
+      (failure) => emit(ChecklistError(mapFailureToMessage(failure))),
+      (success) => emit(ChecklistSuccess(success)),
     );
   }
 }

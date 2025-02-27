@@ -46,7 +46,7 @@ class DatabaseService {
   // and a table to store users.
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(
-      'CREATE TABLE ms_task(_id TEXT PRIMARY KEY, title TEXT, subtitle TEXT, notes TEXT, is_status TEXT, is_type TEXT, created_on TEXT, updated_on TEXT)',
+      'CREATE TABLE ms_task(_id TEXT PRIMARY KEY, title TEXT, subtitle TEXT, notes TEXT, is_status TEXT, is_type TEXT, date_on TEXT, created_on TEXT, updated_on TEXT)',
     );
   }
 
@@ -77,6 +77,7 @@ class DatabaseService {
             notes: e['notes']?.toString() ?? '',
             isStatus: e['is_status'] ?? 'false',
             isType: e['is_type']?.toString() ?? '',
+            dateOn: DateTime.tryParse(e['date_on'].toString()),
             createdOn: DateTime.tryParse(e['created_on'].toString()),
             updatedOn: DateTime.tryParse(e['updated_on'].toString()),
           ),
@@ -94,7 +95,7 @@ class DatabaseService {
       List<TaskModel> result = [];
       List<Map<String, dynamic>> res = await db.query(
         'ms_task',
-        where: "strftime('%Y-%m-%d', created_on) = ?",
+        where: "strftime('%Y-%m-%d', date_on) = ?",
         whereArgs: [date], // Format harus 'YYYY-MM-DD'
       );
       for (var e in res) {
@@ -106,6 +107,7 @@ class DatabaseService {
             notes: e['notes']?.toString() ?? '',
             isStatus: e['is_status'] ?? 'false',
             isType: e['is_type']?.toString() ?? '',
+            dateOn: DateTime.tryParse(e['date_on'].toString()),
             createdOn: DateTime.tryParse(e['created_on'].toString()),
             updatedOn: DateTime.tryParse(e['updated_on'].toString()),
           ),
@@ -114,6 +116,33 @@ class DatabaseService {
       return result;
     } catch (e) {
       throw Exception('Error: $e');
+    }
+  }
+
+  Future<ResponseModel> updateTaskStatus(String taskId, String newStatus) async {
+    try {
+      final db = await _dBService.database;
+      // Data yang akan diperbarui
+      Map<String, dynamic> updatedData = {
+        'is_status': newStatus,
+        'updated_on': DateTime.now().toString(), // Format timestamp
+      };
+
+      // Update di database berdasarkan ID
+      int count = await db.update(
+        'ms_task',
+        updatedData,
+        where: '_id = ?',
+        whereArgs: [taskId],
+      );
+
+      if (count > 0) {
+        return ResponseModel(isSucces: true, message: 'Update berhasil');
+      } else {
+        return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
+      }
+    } catch (e) {
+      return ResponseModel(isSucces: false, message: 'Error: $e');
     }
   }
 }

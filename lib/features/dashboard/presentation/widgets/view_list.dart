@@ -9,21 +9,23 @@ import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 class ViewList extends StatelessWidget {
   final TaskModel dt;
   final Size size;
+  final VoidCallback onTapCheckBox;
   const ViewList({
     super.key,
     required this.dt,
     required this.size,
+    required this.onTapCheckBox,
   });
 
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     String formatdate = '';
-    DateFormat timeFormat = DateFormat('HH:mm'); // Format jam:menit
-    DateFormat fullDateFormat = DateFormat('dd MMM yyyy HH:mm');
+    DateFormat timeFormat = DateFormat('HH:mm:ss'); // Format jam:menit
+    DateFormat fullDateFormat = DateFormat('dd MMM yyyy HH:mm:ss');
 
     bool status = dt.isStatus == 'true' ? true : false;
-    if (DateFormat('yyyy-MM-dd').format(dt.updatedOn!) ==
+    if (DateFormat('yyyy-MM-dd').format(dt.createdOn!) ==
         DateFormat('yyyy-MM-dd').format(now)) {
       formatdate = "Today, ${timeFormat.format(dt.updatedOn!)}";
     } else {
@@ -57,8 +59,8 @@ class ViewList extends StatelessWidget {
                     Text(
                       dt.title.toString(),
                       style: blackTextstyle.copyWith(
-                        fontSize: 13,
-                        fontWeight: medium,
+                        fontSize: 14,
+                        fontWeight: bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -75,24 +77,27 @@ class ViewList extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: status ? AppColors.primary : AppColors.bgColor,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(100),
+              InkWell(
+                onTap: () => onTapCheckBox(),
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: status ? AppColors.primary : AppColors.bgColor,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(100),
+                    ),
+                    border: Border.all(
+                      color: AppColors.primary,
+                      width: 1.0,
+                    ),
                   ),
-                  border: Border.all(
-                    color: AppColors.primary,
-                    width: 1.0,
+                  child: SvgPicture.asset(
+                    MediaRes.checklist,
+                    fit: BoxFit.contain,
+                    width: 20,
+                    // ignore: deprecated_member_use
+                    color: status ? AppColors.bgColor : AppColors.primary,
                   ),
-                ),
-                child: SvgPicture.asset(
-                  MediaRes.checklist,
-                  fit: BoxFit.contain,
-                  width: 20,
-                  // ignore: deprecated_member_use
-                  color: status ? AppColors.bgColor : AppColors.primary,
                 ),
               )
             ],

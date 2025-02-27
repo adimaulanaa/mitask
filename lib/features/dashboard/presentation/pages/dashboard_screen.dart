@@ -11,6 +11,7 @@ import 'package:mitask/core/utils/snackbar_extension.dart';
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/bloc.dart';
+import 'package:mitask/features/dashboard/presentation/pages/create_task_screen.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_list.dart';
 
@@ -32,10 +33,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String inDayTask = '';
   String inDayFinishTask = '';
   String inDayPenddingTask = '';
+  String filterDate = '';
 
   @override
   void initState() {
     super.initState();
+    getDash();
+  }
+
+  void getDash() {
     context.read<DashboardBloc>().add(const GetDashboard());
   }
 
@@ -75,6 +81,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onNavigate: () {}, // bottom close
               );
             }
+          } else if (state is ChecklistError) {
+            if (state.error != '') {
+              context.showErrorSnackBar(
+                state.error,
+                onNavigate: () {}, // bottom close
+              );
+            }
           } else if (state is DashboardLoaded) {
             if (state.data.isNotEmpty) {
               listDate = state.data;
@@ -89,6 +102,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               listTask = [];
               setViewTask();
             }
+          } else if (state is ChecklistSuccess) {
+            if (state.data.isSucces) {
+              // context.showSuccesSnackBar(
+              //   state.data.message,
+              //   onNavigate: () {}, // bottom close
+              // );
+              getTask(filterDate);
+            }
           }
         },
         child: BlocBuilder<DashboardBloc, DashboardState>(
@@ -96,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return Stack(
               children: [
                 _bodyData(context, size), // Latar belakang utama
-                if (state is DashboardLoading) ...[
+                if (state is DashboardLoading || state is ChecklistLoading) ...[
                   // Layar semi-transparan gelap
                   Container(
                     color: Colors.black.withOpacity(0.5),
@@ -140,29 +161,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       fontWeight: bold,
                     ),
                   ),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.only(right: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.bgColor.withOpacity(0.7),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(100),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        child: iconTitleRight(MediaRes.allTask),
                       ),
-                    ),
-                    child: SvgPicture.asset(
-                      MediaRes.addTask,
-                      fit: BoxFit.contain,
-                      width: 20,
-                      // ignore: deprecated_member_use
-                      color: AppColors.bgBlack,
-                    ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CreateTaskScreen(),
+                            ),
+                          );
+                        },
+                        child: iconTitleRight(MediaRes.addTask),
+                      ),
+                    ],
                   ),
                 ],
               ),
               // SizedBox(height: size.height * 0.04),
-              infoTitleTask(MediaRes.allTask, inDayTask, 'Task'),
+              infoTitleTask(MediaRes.task, inDayTask, 'Task'),
               infoTitleTask(MediaRes.finishTask, inDayFinishTask, 'Finish'),
               infoTitleTask(
                   MediaRes.penddingTask, inDayPenddingTask, 'Pendding'),
@@ -199,7 +220,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         splashFactory: NoSplash.splashFactory,
                         highlightColor: Colors.transparent,
                         onTap: () {},
-                        child: ViewList(dt: e, size: size,),
+                        child: ViewList(
+                          dt: e,
+                          size: size,
+                          onTapCheckBox: () {
+                            checklistStatus(
+                              e.id.toString(),
+                              e.isStatus.toString(),
+                            );
+                          },
+                        ),
                       );
                     }).toList(),
                   ),
@@ -208,6 +238,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         SizedBox(height: size.height * 0.01),
       ],
+    );
+  }
+
+  Container iconTitleRight(String icons) {
+    return Container(
+      height: 40,
+      width: 40,
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(right: 15),
+      decoration: BoxDecoration(
+        color: AppColors.bgColor.withOpacity(0.7),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(100),
+        ),
+      ),
+      child: SvgPicture.asset(
+        icons,
+        fit: BoxFit.contain,
+        width: 20,
+        // ignore: deprecated_member_use
+        color: AppColors.bgBlack,
+      ),
     );
   }
 
@@ -265,6 +317,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     inDayFinishTask = setDt[0].taskFinish.toString();
     inDayPenddingTask = setDt[0].taskPendding.toString();
     String dates = DateFormat('yyyy-MM-dd').format(setDt[0].dateTime ?? now);
+    filterDate = dates;
     getTask(dates);
   }
 
@@ -272,5 +325,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     viewListTask = [];
     viewListTask = listTask;
     // setState(() {});
+  }
+
+  void checklistStatus(String id, String isStatus) {
+    String result = '';
+    if (isStatus == 'true') {
+      result = 'false';
+    } else {
+      result = 'true';
+    }
+    context
+        .read<DashboardBloc>()
+        .add(Checklist(id: id.toString(), data: result));
   }
 }

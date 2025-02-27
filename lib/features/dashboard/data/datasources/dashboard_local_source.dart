@@ -1,5 +1,6 @@
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
+import 'package:mitask/features/dashboard/data/models/response_model.dart';
 import 'package:mitask/features/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
@@ -8,6 +9,8 @@ import 'package:intl/intl.dart';
 abstract class DashboardLocalSource {
   Future<List<DateModel>> dashboard();
   Future<List<TaskModel>> taskByDate(String date);
+  Future<ResponseModel> createTask(TaskModel data);
+  Future<ResponseModel> checklist(String id, String data);
 }
 
 class DashboardLocalSourceImpl implements DashboardLocalSource {
@@ -33,7 +36,7 @@ class DashboardLocalSourceImpl implements DashboardLocalSource {
 
       // Filter data dari database yang memiliki created_on sesuai currentDate
       var tasksForTheDay = allTask.where((task) {
-        DateTime createdOn = DateTime.parse(task.createdOn.toString());
+        DateTime createdOn = DateTime.parse(task.dateOn.toString());
         return createdOn.year == currentDate.year &&
             createdOn.month == currentDate.month &&
             createdOn.day == currentDate.day;
@@ -63,6 +66,18 @@ class DashboardLocalSourceImpl implements DashboardLocalSource {
   @override
   Future<List<TaskModel>> taskByDate(String date) async {
     List<TaskModel> result = await dbService.getTasksByDate(date);
+    return result;
+  }
+  
+  @override
+  Future<ResponseModel> createTask(TaskModel data) async {
+    ResponseModel result = await dbService.createTask(data);
+    return result;
+  }
+  
+  @override
+  Future<ResponseModel> checklist(String id, String data) async {
+    ResponseModel result = await dbService.updateTaskStatus(id, data);
     return result;
   }
 }
