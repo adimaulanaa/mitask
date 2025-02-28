@@ -146,6 +146,13 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         onTap: () {
+          DateTime updatedDateTime = dateOn!.copyWith(
+            hour: now.hour,
+            minute: now.minute,
+            second: now.second,
+            millisecond: now.millisecond,
+            microsecond: now.microsecond,
+          );
           TaskModel create = TaskModel(
             id: '',
             title: titleController.text,
@@ -153,7 +160,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
             notes: notesController.text,
             isStatus: 'false',
             isType: selectedType ?? '',
-            dateOn: dateOn,
+            dateOn: updatedDateTime,
             createdOn: now,
             updatedOn: now,
           );

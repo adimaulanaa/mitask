@@ -50,4 +50,14 @@ class DashboardRepositoryImpl implements DashboardRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, ResponseModel>> deleteTask(String id) async {
+    try {
+      final result = await dataLocalSource.deleteTask(id);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

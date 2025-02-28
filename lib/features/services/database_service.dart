@@ -145,4 +145,25 @@ class DatabaseService {
       return ResponseModel(isSucces: false, message: 'Error: $e');
     }
   }
+
+  Future<ResponseModel> deleteTaskById(String taskId) async {
+  try {
+    final db = await _dBService.database;
+
+    // Hapus data berdasarkan ID
+    int count = await db.delete(
+      'ms_task',
+      where: '_id = ?',
+      whereArgs: [taskId],
+    );
+
+    if (count > 0) {
+      return ResponseModel(isSucces: true, message: 'Task berhasil dihapus');
+    } else {
+      return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
+    }
+  } catch (e) {
+    return ResponseModel(isSucces: false, message: 'Error: $e');
+  }
+}
 }

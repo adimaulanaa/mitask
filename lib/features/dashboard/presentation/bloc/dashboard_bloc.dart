@@ -18,6 +18,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<GetTask>(_onTask);
     on<CreateTask>(_onCreateTask);
     on<Checklist>(_onChecklist);
+    on<DeleteTask>(_onDelChecklist);
   }
 
   void _onDashboard(GetDashboard event, Emitter<DashboardState> emit) async {
@@ -61,6 +62,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     result.fold(
       (failure) => emit(ChecklistError(mapFailureToMessage(failure))),
       (success) => emit(ChecklistSuccess(success)),
+    );
+  }
+
+  void _onDelChecklist(DeleteTask event, Emitter<DashboardState> emit) async {
+    emit(DeleteTaskLoading());
+
+    final Either<Failure, ResponseModel> result =
+        await _dashboardRepo.deleteTask(event.id);
+    result.fold(
+      (failure) => emit(DeleteTaskError(mapFailureToMessage(failure))),
+      (success) => emit(DeleteTaskSuccess(success)),
     );
   }
 }

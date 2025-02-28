@@ -12,6 +12,7 @@ import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:mitask/features/dashboard/presentation/pages/create_task_screen.dart';
+import 'package:mitask/features/dashboard/presentation/widgets/popup.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_list.dart';
 
@@ -88,6 +89,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onNavigate: () {}, // bottom close
               );
             }
+          } else if (state is DeleteTaskError) {
+            if (state.error != '') {
+              context.showErrorSnackBar(
+                state.error,
+                onNavigate: () {}, // bottom close
+              );
+            }
           } else if (state is DashboardLoaded) {
             if (state.data.isNotEmpty) {
               listDate = state.data;
@@ -110,6 +118,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // );
               getTask(filterDate);
             }
+          } else if (state is DeleteTaskSuccess) {
+            if (state.data.isSucces) {
+              // context.showSuccesSnackBar(
+              //   state.data.message,
+              //   onNavigate: () {}, // bottom close
+              // );
+              getTask(filterDate);
+            }
           }
         },
         child: BlocBuilder<DashboardBloc, DashboardState>(
@@ -117,7 +133,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return Stack(
               children: [
                 _bodyData(context, size), // Latar belakang utama
-                if (state is DashboardLoading || state is ChecklistLoading) ...[
+                if (state is DashboardLoading ||
+                    state is ChecklistLoading ||
+                    state is DeleteTaskLoading) ...[
                   // Layar semi-transparan gelap
                   Container(
                     color: Colors.black.withOpacity(0.5),
@@ -198,8 +216,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       highlightColor: Colors.transparent,
                       onTap: () => selectedDate(e.date.toString()),
                       child: DateCircle(
-                        date: e.date.toString(),
-                        day: e.day.toString(),
+                        dt: e,
                         inDay: inDay,
                       ),
                     );
@@ -228,6 +245,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               e.id.toString(),
                               e.isStatus.toString(),
                             );
+                          },
+                          onDelete: () {
+                            context
+                                .read<DashboardBloc>()
+                                .add(DeleteTask(id: e.id.toString()));
+                          },
+                          onInfo: () {
+                            informationTask(context, size, e);
                           },
                         ),
                       );

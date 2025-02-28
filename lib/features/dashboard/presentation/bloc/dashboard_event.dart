@@ -40,3 +40,11 @@ class Checklist extends DashboardEvent {
   List<Object> get props => [];
 }
 
+class DeleteTask extends DashboardEvent {
+  final String id;
+  const DeleteTask({required this.id});
+
+  @override
+  List<Object> get props => [];
+}
+

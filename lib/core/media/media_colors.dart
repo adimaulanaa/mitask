@@ -8,6 +8,7 @@ class AppColors {
   static const Color bgBlack = Color(0xFF000000);
   static const Color bgGrey = Color(0xFF9A9A9A);
   static const Color bgGreySecond = Color(0xFFF2F2F2);
+  static const Color bgGreyTree = Color(0xFFB7B7B7);
   static const Color bgBlue = Color(0xFF006BFF);
   static const Color bgGreen = Color(0xFF36BB38);
   static const Color bgYellow = Color(0xFFFFEB00);

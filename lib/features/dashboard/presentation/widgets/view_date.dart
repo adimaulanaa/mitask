@@ -4,28 +4,46 @@ import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 
 class DateCircle extends StatelessWidget {
-  final String date;
-  final String day;
+  final DateModel dt;
   final String inDay;
 
   const DateCircle({
     super.key,
-    required this.date,
-    required this.day,
+    required this.dt,
     required this.inDay,
   });
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    Color colors = AppColors.bgTrans;
+    int task = int.parse(dt.taskToday.toString());
+    int finish = int.parse(dt.taskFinish.toString());
+    // int pending = int.parse(dt.taskPendding.toString());
+    if (finish > 0 ) {
+      colors = AppColors.bgYellow;
+    } else if (finish == 0 && task > 0) {
+      colors = AppColors.bgBlue;
+    } else {
+      colors = AppColors.bgGrey;
+    }
+    String day = '';
+    if (dt.date == now.day.toString()) {
+      day = 'Today';
+    } else {
+      day = dt.day.toString();
+    }
+    
     return Container(
       width: 60,
-      height: 60,
+      height: 70,
       margin: const EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
-        color: inDay == date ? AppColors.primary : Colors.transparent,
-        shape: BoxShape.circle,
+        color: inDay == dt.date ? AppColors.primary : Colors.transparent,
+        // shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(
-          color: inDay == date ? AppColors.primary : AppColors.bgColor,
+          color: AppColors.primary,
           width: 2.0,
         ),
       ),
@@ -33,20 +51,30 @@ class DateCircle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            date,
-            style: transTextstyle.copyWith(
-              fontSize: 18,
-              fontWeight: bold,
-              color: inDay == date ? AppColors.bgColor : AppColors.bgBlack,
-              height: 1.0,
-            ),
-          ),
-          Text(
             day,
             style: transTextstyle.copyWith(
               fontSize: 11,
               fontWeight: bold,
-              color: inDay == date ? AppColors.bgColor : AppColors.bgGrey,
+              color: inDay == dt.date ? AppColors.bgColor : AppColors.bgGrey,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            dt.date.toString(),
+            style: transTextstyle.copyWith(
+              fontSize: 18,
+              fontWeight: bold,
+              color: inDay == dt.date ? AppColors.bgColor : AppColors.bgBlack,
+              height: 1.0,
+            ),
+          ),
+          const SizedBox(height: 7),
+          Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(
+              color: colors,
+              shape: BoxShape.circle,
             ),
           ),
         ],
@@ -54,6 +82,7 @@ class DateCircle extends StatelessWidget {
     );
   }
 }
+
 
 class DateRechgel extends StatelessWidget {
   final DateModel dt;
