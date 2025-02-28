@@ -12,6 +12,7 @@ abstract class DashboardLocalSource {
   Future<ResponseModel> createTask(TaskModel data);
   Future<ResponseModel> checklist(String id, String data);
   Future<ResponseModel> deleteTask(String id);
+  Future<ResponseModel> changeDate(String id, String date);
 }
 
 class DashboardLocalSourceImpl implements DashboardLocalSource {
@@ -85,6 +86,12 @@ class DashboardLocalSourceImpl implements DashboardLocalSource {
   @override
   Future<ResponseModel> deleteTask(String id) async {
     ResponseModel result = await dbService.deleteTaskById(id);
+    return result;
+  }
+  
+  @override
+  Future<ResponseModel> changeDate(String id, String date) async {
+    ResponseModel result = await dbService.updateChangeDateTask(id, date);
     return result;
   }
 }

@@ -60,4 +60,14 @@ class DashboardRepositoryImpl implements DashboardRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, ResponseModel>> changeDate(String id, String date) async {
+    try {
+      final result = await dataLocalSource.changeDate(id, date);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

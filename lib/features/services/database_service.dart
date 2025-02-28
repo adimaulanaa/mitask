@@ -166,4 +166,32 @@ class DatabaseService {
     return ResponseModel(isSucces: false, message: 'Error: $e');
   }
 }
+
+Future<ResponseModel> updateChangeDateTask(String taskId, String date) async {
+    try {
+      final db = await _dBService.database;
+      
+      // Data yang akan diperbarui
+      Map<String, dynamic> updatedData = {
+        'date_on': date,
+        'updated_on': DateTime.now().toString(), // Format timestamp
+      };
+
+      // Update di database berdasarkan ID
+      int count = await db.update(
+        'ms_task',
+        updatedData,
+        where: '_id = ?',
+        whereArgs: [taskId],
+      );
+
+      if (count > 0) {
+        return ResponseModel(isSucces: true, message: 'Update berhasil');
+      } else {
+        return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
+      }
+    } catch (e) {
+      return ResponseModel(isSucces: false, message: 'Error: $e');
+    }
+  }
 }

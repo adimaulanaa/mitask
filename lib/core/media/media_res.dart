@@ -22,6 +22,7 @@ class MediaRes {
   static const allTask = '$_baseIcon/all-task.svg';
   static const checklist = '$_baseIcon/checklist.svg';
   static const calender = '$_baseIcon/calender.svg';
+  static const reload = '$_baseIcon/reload.svg';
 
 
   

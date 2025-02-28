@@ -11,4 +11,5 @@ abstract class DashboardRepository {
   Future<Either<Failure, ResponseModel>> createTask(TaskModel data);
   Future<Either<Failure, ResponseModel>> checklist(String id, String data);
   Future<Either<Failure, ResponseModel>> deleteTask(String id);
+  Future<Either<Failure, ResponseModel>> changeDate(String id, String date);
 }

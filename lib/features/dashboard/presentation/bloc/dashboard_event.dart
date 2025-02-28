@@ -48,3 +48,12 @@ class DeleteTask extends DashboardEvent {
   List<Object> get props => [];
 }
 
+class ChangeDateTask extends DashboardEvent {
+  final String id;
+  final String date;
+  const ChangeDateTask({required this.id, required this.date});
+
+  @override
+  List<Object> get props => [];
+}
+

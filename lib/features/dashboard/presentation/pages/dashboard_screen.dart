@@ -31,9 +31,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<TaskModel> viewListTask = [];
   String inDay = '';
   String inDayName = '';
-  String inDayTask = '';
-  String inDayFinishTask = '';
-  String inDayPenddingTask = '';
+  String inDayTask = '0';
+  String inDayFinishTask = '0';
+  String inDayPenddingTask = '0';
   String filterDate = '';
 
   @override
@@ -96,10 +96,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onNavigate: () {}, // bottom close
               );
             }
+          } else if (state is ChangeDateTaskError) {
+            if (state.error != '') {
+              context.showErrorSnackBar(
+                state.error,
+                onNavigate: () {}, // bottom close
+              );
+            }
           } else if (state is DashboardLoaded) {
             if (state.data.isNotEmpty) {
               listDate = state.data;
-              selectedDate(now.day.toString());
+              // selectedDate(now.day.toString());
+              filterDate = DateFormat('yyyy-MM-dd').format(now);
+              inDay = now.day.toString();
+              getTask(filterDate);
               scrollToToday();
             }
           } else if (state is TaskLoaded) {
@@ -112,19 +122,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }
           } else if (state is ChecklistSuccess) {
             if (state.data.isSucces) {
-              // context.showSuccesSnackBar(
-              //   state.data.message,
-              //   onNavigate: () {}, // bottom close
-              // );
+              getDash();
               getTask(filterDate);
             }
           } else if (state is DeleteTaskSuccess) {
             if (state.data.isSucces) {
-              // context.showSuccesSnackBar(
-              //   state.data.message,
-              //   onNavigate: () {}, // bottom close
-              // );
               getTask(filterDate);
+            }
+          } else if (state is ChangeDateTaskSuccess) {
+            if (state.data.isSucces) {
+              getTask(filterDate);
+            } else {
+              context.showErrorSnackBar(
+                state.data.message,
+                onNavigate: () {}, // bottom close
+              );
             }
           }
         },
@@ -135,7 +147,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 _bodyData(context, size), // Latar belakang utama
                 if (state is DashboardLoading ||
                     state is ChecklistLoading ||
-                    state is DeleteTaskLoading) ...[
+                    state is DeleteTaskLoading ||
+                    state is ChangeDateTaskLoading) ...[
                   // Layar semi-transparan gelap
                   Container(
                     color: Colors.black.withOpacity(0.5),
@@ -254,6 +267,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           onInfo: () {
                             informationTask(context, size, e);
                           },
+                          onChange: () async {
+                            String? selected =
+                                await changeDate(context, size, e.dateOn);
+                            if (selected != null) {
+                              reloadTask(e.id.toString(), selected);
+                            }
+                          },
                         ),
                       );
                     }).toList(),
@@ -349,6 +369,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void setViewTask() {
     viewListTask = [];
     viewListTask = listTask;
+    if (listTask.isNotEmpty) {
+      List<TaskModel> setDt = listTask.where((task) {
+        return task.dateOn!.year == now.year &&
+         task.dateOn!.month == now.month &&
+         task.dateOn!.day == now.day;
+      }).toList();
+      // Hitung jumlah task
+      int taskToday = setDt.length;
+      int taskFinished =
+          setDt.where((task) => task.isStatus == 'true').length;
+      int taskPending = taskToday - taskFinished;
+      inDayTask = taskToday.toString();
+      inDayFinishTask = taskFinished.toString();
+      inDayPenddingTask = taskPending.toString();
+    }
     // setState(() {});
   }
 
@@ -362,5 +397,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
     context
         .read<DashboardBloc>()
         .add(Checklist(id: id.toString(), data: result));
+  }
+
+  void reloadTask(String id, String date) {
+    bool inputDate = isValidDate(date);
+    if (!inputDate) {
+      context.showErrorSnackBar(
+        'Tanggal tidak tersedia, coba lagi',
+        onNavigate: () {}, // bottom close
+      );
+    } else {
+      context
+          .read<DashboardBloc>()
+          .add(ChangeDateTask(id: id.toString(), date: date));
+    }
+  }
+
+  bool isValidDate(String date) {
+    try {
+      List<String> parts = date.split(" ");
+      String datePart = parts[0]; // Ambil bagian tanggal, misalnya "2025-02-29"
+
+      List<String> dateComponents = datePart.split("-");
+      if (dateComponents.length != 3) return false;
+
+      int year = int.parse(dateComponents[0]);
+      int month = int.parse(dateComponents[1]);
+      int day = int.parse(dateComponents[2]);
+
+      // ✅ Pastikan bulan dalam rentang yang benar (1 - 12)
+      if (month < 1 || month > 12) return false;
+
+      // ✅ Pastikan hari tidak melebihi jumlah hari dalam bulan itu
+      int maxDaysInMonth = DateTime(year, month + 1, 0).day;
+      if (day < 1 || day > maxDaysInMonth) return false;
+
+      return true; // ✅ Tanggal valid
+    } catch (e) {
+      return false; // ❌ Jika ada error, berarti tanggal tidak valid
+    }
   }
 }

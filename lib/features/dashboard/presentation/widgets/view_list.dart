@@ -12,6 +12,7 @@ class ViewList extends StatelessWidget {
   final VoidCallback onTapCheckBox;
   final VoidCallback onDelete;
   final VoidCallback onInfo;
+  final VoidCallback onChange;
   const ViewList({
     super.key,
     required this.dt,
@@ -19,6 +20,7 @@ class ViewList extends StatelessWidget {
     required this.onTapCheckBox,
     required this.onDelete,
     required this.onInfo,
+    required this.onChange,
   });
 
   @override
@@ -31,9 +33,9 @@ class ViewList extends StatelessWidget {
     bool status = dt.isStatus == 'true' ? true : false;
     if (DateFormat('yyyy-MM-dd').format(dt.dateOn!) ==
         DateFormat('yyyy-MM-dd').format(now)) {
-      formatdate = "Today, ${timeFormat.format(dt.updatedOn!)}";
+      formatdate = "Today, ${timeFormat.format(dt.dateOn!)}";
     } else {
-      formatdate = fullDateFormat.format(dt.updatedOn!);
+      formatdate = fullDateFormat.format(dt.dateOn!);
     }
 
     return Container(
@@ -128,6 +130,17 @@ class ViewList extends StatelessWidget {
               Row(
                 children: [
                   InkWell(
+                    onTap: () => onChange(),
+                    child: SvgPicture.asset(
+                      MediaRes.reload,
+                      fit: BoxFit.contain,
+                      width: 20,
+                      // ignore: deprecated_member_use
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  InkWell(
                     onTap: () => onDelete(),
                     child: SvgPicture.asset(
                       MediaRes.deleted,
@@ -137,7 +150,7 @@ class ViewList extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 15),
                   InkWell(
                     onTap: () => onInfo(),
                     child: SvgPicture.asset(
