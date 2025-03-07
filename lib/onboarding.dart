@@ -34,9 +34,9 @@ class _OnboardingState extends State<Onboarding> {
       body: Center(
         child: Image.asset(
           MediaRes.omboarding, // Ganti dengan path gambar Anda
-          width: MediaQuery.of(context).size.width * 0.37,
+          width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.25,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         ),
       ),
     );

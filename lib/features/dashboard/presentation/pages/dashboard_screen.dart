@@ -316,8 +316,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget dataIsEmpty() => const Center(
-        child: Text('kosong'),
+  Widget dataIsEmpty() => Center(
+        child: Text(
+          'Data tidak tersedia.',
+          style: blackTextstyle.copyWith(
+            fontSize: 25,
+            fontWeight: bold,
+          ),
+        ),
       );
 
   Row infoTitleTask(String icon, value, name) {
@@ -380,13 +386,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (listTask.isNotEmpty) {
       List<TaskModel> setDt = listTask.where((task) {
         return task.dateOn!.year == now.year &&
-         task.dateOn!.month == now.month &&
-         task.dateOn!.day == now.day;
+            task.dateOn!.month == now.month &&
+            task.dateOn!.day == now.day;
       }).toList();
       // Hitung jumlah task
       int taskToday = setDt.length;
-      int taskFinished =
-          setDt.where((task) => task.isStatus == 'true').length;
+      int taskFinished = setDt.where((task) => task.isStatus == 'true').length;
       int taskPending = taskToday - taskFinished;
       inDayTask = taskToday.toString();
       inDayFinishTask = taskFinished.toString();
