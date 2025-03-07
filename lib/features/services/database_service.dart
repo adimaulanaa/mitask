@@ -1,5 +1,6 @@
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/response_model.dart';
+import 'package:mitask/features/report/data/models/report_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
@@ -119,7 +120,8 @@ class DatabaseService {
     }
   }
 
-  Future<ResponseModel> updateTaskStatus(String taskId, String newStatus) async {
+  Future<ResponseModel> updateTaskStatus(
+      String taskId, String newStatus) async {
     try {
       final db = await _dBService.database;
       // Data yang akan diperbarui
@@ -147,30 +149,30 @@ class DatabaseService {
   }
 
   Future<ResponseModel> deleteTaskById(String taskId) async {
-  try {
-    final db = await _dBService.database;
-
-    // Hapus data berdasarkan ID
-    int count = await db.delete(
-      'ms_task',
-      where: '_id = ?',
-      whereArgs: [taskId],
-    );
-
-    if (count > 0) {
-      return ResponseModel(isSucces: true, message: 'Task berhasil dihapus');
-    } else {
-      return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
-    }
-  } catch (e) {
-    return ResponseModel(isSucces: false, message: 'Error: $e');
-  }
-}
-
-Future<ResponseModel> updateChangeDateTask(String taskId, String date) async {
     try {
       final db = await _dBService.database;
-      
+
+      // Hapus data berdasarkan ID
+      int count = await db.delete(
+        'ms_task',
+        where: '_id = ?',
+        whereArgs: [taskId],
+      );
+
+      if (count > 0) {
+        return ResponseModel(isSucces: true, message: 'Task berhasil dihapus');
+      } else {
+        return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
+      }
+    } catch (e) {
+      return ResponseModel(isSucces: false, message: 'Error: $e');
+    }
+  }
+
+  Future<ResponseModel> updateChangeDateTask(String taskId, String date) async {
+    try {
+      final db = await _dBService.database;
+
       // Data yang akan diperbarui
       Map<String, dynamic> updatedData = {
         'date_on': date,
@@ -192,6 +194,64 @@ Future<ResponseModel> updateChangeDateTask(String taskId, String date) async {
       }
     } catch (e) {
       return ResponseModel(isSucces: false, message: 'Error: $e');
+    }
+  }
+
+  Future<List<ReportModel>> getFilterAllTask(
+      String startDate, String endDate) async {
+    try {
+      final db = await _dBService.database;
+
+      // 🔹 Query dengan filter tanggal berdasarkan createdOn
+      final List<Map<String, dynamic>> maps = await db.query(
+        'ms_task',
+        where: "strftime('%Y-%m-%d', date_on) BETWEEN ? AND ?",
+        whereArgs: [startDate, endDate], // Kirim dalam format 'yyyy-MM-dd'
+      );
+      List<ReportModel> result = maps.map((e) {
+        return ReportModel(
+          id: e['_id']?.toString() ?? '',
+          title: e['title']?.toString() ?? '',
+          subtitle: e['subtitle']?.toString() ?? '',
+          notes: e['notes']?.toString() ?? '',
+          isStatus: e['is_status'] ?? 'false',
+          isType: e['is_type']?.toString() ?? '',
+          dateOn: DateTime.tryParse(e['date_on'].toString()),
+          createdOn: DateTime.tryParse(e['created_on'].toString()),
+          updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+        );
+      }).toList();
+
+      return result;
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<List<TaskModel>> getExport() async {
+    try {
+      final db = await _dBService.database;
+      final List<Map<String, dynamic>> maps =
+          await db.query('ms_task'); // Ambil semua data
+      List<TaskModel> result = [];
+      for (var e in maps) {
+        result.add(
+          TaskModel(
+            id: e['_id']?.toString() ?? '',
+            title: e['title']?.toString() ?? '',
+            subtitle: e['subtitle']?.toString() ?? '',
+            notes: e['notes']?.toString() ?? '',
+            isStatus: e['is_status'] ?? 'false',
+            isType: e['is_type']?.toString() ?? '',
+            dateOn: DateTime.tryParse(e['date_on'].toString()),
+            createdOn: DateTime.tryParse(e['created_on'].toString()),
+            updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+          ),
+        );
+      }
+      return result;
+    } catch (e) {
+      throw Exception('Error: $e');
     }
   }
 }

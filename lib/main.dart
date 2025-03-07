@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/onboarding.dart';
 import 'package:mitask/dependency_injection.dart' as di;
 
@@ -16,6 +17,9 @@ void main() async {
       providers: [
         BlocProvider<DashboardBloc>(
           create: (context) => getIt<DashboardBloc>(),
+        ),
+        BlocProvider<ReportBloc>(
+          create: (context) => getIt<ReportBloc>(),
         ),
         // Tambahkan provider lain jika diperlukan
       ],

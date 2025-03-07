@@ -22,4 +22,7 @@ class StringResources {
   static const String type = "Tipe...";
 
   static String createTask = "Create New Task"; 
+
+  //! Report 
+  static String rTitle = "Report"; 
 }

@@ -7,14 +7,15 @@ import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/loading_helpers.dart';
+import 'package:mitask/core/utils/popup_information_task.dart';
 import 'package:mitask/core/utils/snackbar_extension.dart';
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:mitask/features/dashboard/presentation/pages/create_task_screen.dart';
-import 'package:mitask/features/dashboard/presentation/widgets/popup.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_list.dart';
+import 'package:mitask/features/report/presentation/pages/report_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -195,7 +196,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ReportScreen(),
+                            ),
+                          );
+                        },
                         child: iconTitleRight(MediaRes.allTask),
                       ),
                       InkWell(
@@ -265,7 +273,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 .add(DeleteTask(id: e.id.toString()));
                           },
                           onInfo: () {
-                            informationTask(context, size, e);
+                            informationTaskDash(context, size, e);
                           },
                           onChange: () async {
                             String? selected =
