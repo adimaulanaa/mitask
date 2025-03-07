@@ -219,9 +219,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            textFormFieldCustom(titleController, StringResources.title),
+            textFormFieldCustom(titleController, StringResources.title, 1),
             const SizedBox(height: 16),
-            textFormFieldCustom(subtitleController, StringResources.subtitle),
+            textFormFieldCustom(subtitleController, StringResources.subtitle, 2),
             const SizedBox(height: 16),
             DropdownMenu(
               menuStyle: MenuStyle(
@@ -277,8 +277,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
               },
             ),
             const SizedBox(height: 16),
-            textFormFieldCustom(notesController, StringResources.notes),
-            const SizedBox(height: 16),
+            textFormFieldCustom(notesController, StringResources.notes, 3),
+            SizedBox(height: size.height * 0.1),
           ],
         ),
       ),
@@ -286,7 +286,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   }
 
   Widget textFormFieldCustom(
-      TextEditingController titleContr, String hintText) {
+    TextEditingController titleContr,
+    String hintText,
+    int minLines,
+  ) {
     return TextFormField(
       controller: titleContr,
       decoration: InputDecoration(
@@ -318,6 +321,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         fontWeight: semiBold,
       ),
       keyboardType: TextInputType.text,
+      minLines: minLines,
+      maxLines: null,
     );
   }
 }
