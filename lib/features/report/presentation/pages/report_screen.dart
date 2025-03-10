@@ -185,22 +185,34 @@ class _ReportScreenState extends State<ReportScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            SingleChildScrollView(
-              child: Column(
-                children: report.map((e) {
-                  return InkWell(
-                    onTap: () {
-                      inforTaskRep(context, size, e);
-                    },
-                    child: ViewReport(dt: e, size: size));
-                }).toList(),
-              ),
-            ),
+            report.isNotEmpty
+                ? SingleChildScrollView(
+                    child: Column(
+                      children: report.map((e) {
+                        return InkWell(
+                            onTap: () {
+                              inforTaskRep(context, size, e);
+                            },
+                            child: ViewReport(dt: e, size: size));
+                      }).toList(),
+                    ),
+                  )
+                : dataIsEmpty(),
           ],
         ),
       ),
     );
   }
+
+  Widget dataIsEmpty() => Center(
+        child: Text(
+          'Data tidak tersedia.',
+          style: blackTextstyle.copyWith(
+            fontSize: 25,
+            fontWeight: bold,
+          ),
+        ),
+      );
 
   Container exportImport(Size size, String title, icons) {
     return Container(
@@ -341,7 +353,7 @@ class _ReportScreenState extends State<ReportScreen> {
       });
     }
   }
-  
+
   void getFilterTask() {
     if (startDate != '' && endDate != '') {
       reportAll(startDate, endDate);

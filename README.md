@@ -3,5 +3,6 @@
 App Mini Task For Everything task daily
 
 
-## Build Apk
-
+## Build APK
+- fvm flutter build apk --debug
+- fvm flutter build apk --release
