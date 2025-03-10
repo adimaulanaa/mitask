@@ -34,7 +34,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   DateTime? dateOn;
   String? selectedType;
   String inDay = '';
-  List<String> listType = ['Work', 'Personal'];
+  List<String> listType = ['Work', 'Personal', 'Dll'];
 
   @override
   void initState() {

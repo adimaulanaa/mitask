@@ -17,7 +17,7 @@ class StringResources {
 
   //! Dashboard 
   static const String title = "Title..."; 
-  static const String subtitle = "Sub Title..."; 
+  static const String subtitle = "Subtitle..."; 
   static const String notes = "Notes..."; 
   static const String type = "Tipe...";
 

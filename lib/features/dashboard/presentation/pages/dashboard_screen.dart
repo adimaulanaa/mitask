@@ -6,6 +6,7 @@ import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/data_empty.dart';
 import 'package:mitask/core/utils/loading_helpers.dart';
 import 'package:mitask/core/utils/popup_information_task.dart';
 import 'package:mitask/core/utils/snackbar_extension.dart';
@@ -128,10 +129,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }
           } else if (state is DeleteTaskSuccess) {
             if (state.data.isSucces) {
+              getDash();
               getTask(filterDate);
             }
           } else if (state is ChangeDateTaskSuccess) {
             if (state.data.isSucces) {
+              getDash();
               getTask(filterDate);
             } else {
               context.showErrorSnackBar(
@@ -165,132 +168,134 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Column _bodyData(BuildContext context, Size size) {
-    return Column(
-      children: [
-        Container(
-          height: size.height * 0.31,
-          width: size.width,
-          padding: const EdgeInsets.only(left: 20),
-          decoration: const BoxDecoration(
-            color: AppColors.secondary,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: size.height * 0.05),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Mini Task',
-                    style: blackTextstyle.copyWith(
-                      fontSize: 25,
-                      fontWeight: bold,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ReportScreen(),
-                            ),
-                          );
-                        },
-                        child: iconTitleRight(MediaRes.allTask),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CreateTaskScreen(),
-                            ),
-                          );
-                        },
-                        child: iconTitleRight(MediaRes.addTask),
-                      ),
-                    ],
-                  ),
-                ],
+  Widget _bodyData(BuildContext context, Size size) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            height: size.height * 0.31,
+            width: size.width,
+            padding: const EdgeInsets.only(left: 20),
+            decoration: const BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
               ),
-              // SizedBox(height: size.height * 0.04),
-              infoTitleTask(MediaRes.task, inDayTask, 'Task'),
-              infoTitleTask(MediaRes.finishTask, inDayFinishTask, 'Finish'),
-              infoTitleTask(
-                  MediaRes.penddingTask, inDayPenddingTask, 'Pendding'),
-              const SizedBox(height: 20),
-              SingleChildScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: listDate.map((e) {
-                    return InkWell(
-                      splashFactory: NoSplash.splashFactory,
-                      highlightColor: Colors.transparent,
-                      onTap: () => selectedDate(e.date.toString()),
-                      child: DateCircle(
-                        dt: e,
-                        inDay: inDay,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: size.height * 0.05),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Mini Task',
+                      style: blackTextstyle.copyWith(
+                        fontSize: 25,
+                        fontWeight: bold,
                       ),
-                    );
-                  }).toList(),
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ReportScreen(),
+                              ),
+                            );
+                          },
+                          child: iconTitleRight(MediaRes.allTask),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CreateTaskScreen(),
+                              ),
+                            );
+                          },
+                          child: iconTitleRight(MediaRes.addTask),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-        SizedBox(height: size.height * 0.02),
-        // const Center(child: Text('dashboard')),
-        Expanded(
-          child: viewListTask.isNotEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: viewListTask.map((e) {
+                // SizedBox(height: size.height * 0.04),
+                infoTitleTask(MediaRes.task, inDayTask, 'Task'),
+                infoTitleTask(MediaRes.finishTask, inDayFinishTask, 'Finish'),
+                infoTitleTask(
+                    MediaRes.penddingTask, inDayPenddingTask, 'Pendding'),
+                const SizedBox(height: 20),
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: listDate.map((e) {
                       return InkWell(
                         splashFactory: NoSplash.splashFactory,
                         highlightColor: Colors.transparent,
-                        onTap: () {},
-                        child: ViewList(
+                        onTap: () => selectedDate(e.date.toString()),
+                        child: DateCircle(
                           dt: e,
-                          size: size,
-                          onTapCheckBox: () {
-                            checklistStatus(
-                              e.id.toString(),
-                              e.isStatus.toString(),
-                            );
-                          },
-                          onDelete: () {
-                            context
-                                .read<DashboardBloc>()
-                                .add(DeleteTask(id: e.id.toString()));
-                          },
-                          onInfo: () {
-                            informationTaskDash(context, size, e);
-                          },
-                          onChange: () async {
-                            String? selected =
-                                await changeDate(context, size, e.dateOn);
-                            if (selected != null) {
-                              reloadTask(e.id.toString(), selected);
-                            }
-                          },
+                          inDay: inDay,
                         ),
                       );
                     }).toList(),
                   ),
                 )
-              : dataIsEmpty(),
-        ),
-        SizedBox(height: size.height * 0.01),
-      ],
+              ],
+            ),
+          ),
+          SizedBox(height: size.height * 0.02),
+          // const Center(child: Text('dashboard')),
+          Expanded(
+            child: viewListTask.isNotEmpty
+                ? SingleChildScrollView(
+                    child: Column(
+                      children: viewListTask.map((e) {
+                        return InkWell(
+                          splashFactory: NoSplash.splashFactory,
+                          highlightColor: Colors.transparent,
+                          onTap: () {},
+                          child: ViewList(
+                            dt: e,
+                            size: size,
+                            onTapCheckBox: () {
+                              checklistStatus(
+                                e.id.toString(),
+                                e.isStatus.toString(),
+                              );
+                            },
+                            onDelete: () {
+                              context
+                                  .read<DashboardBloc>()
+                                  .add(DeleteTask(id: e.id.toString()));
+                            },
+                            onInfo: () {
+                              informationTaskDash(context, size, e);
+                            },
+                            onChange: () async {
+                              String? selected =
+                                  await changeDate(context, size, e.dateOn);
+                              if (selected != null) {
+                                reloadTask(e.id.toString(), selected);
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  )
+                : dataIsEmpty(),
+          ),
+          SizedBox(height: size.height * 0.01),
+        ],
+      ),
     );
   }
 
@@ -315,16 +320,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
-  Widget dataIsEmpty() => Center(
-        child: Text(
-          'Data tidak tersedia.',
-          style: blackTextstyle.copyWith(
-            fontSize: 25,
-            fontWeight: bold,
-          ),
-        ),
-      );
 
   Row infoTitleTask(String icon, value, name) {
     return Row(
@@ -414,15 +409,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void reloadTask(String id, String date) {
     bool inputDate = isValidDate(date);
-    if (!inputDate) {
+    if (inputDate) {
+      context
+          .read<DashboardBloc>()
+          .add(ChangeDateTask(id: id.toString(), date: date));
+    } else {
       context.showErrorSnackBar(
         'Tanggal tidak tersedia, coba lagi',
         onNavigate: () {}, // bottom close
       );
-    } else {
-      context
-          .read<DashboardBloc>()
-          .add(ChangeDateTask(id: id.toString(), date: date));
     }
   }
 

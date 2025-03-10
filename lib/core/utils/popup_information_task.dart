@@ -36,8 +36,7 @@ Future<dynamic> informationTaskDash(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize:
-                    MainAxisSize.min, // Supaya tinggi menyesuaikan isi
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,17 +72,16 @@ Future<dynamic> informationTaskDash(
                   // Title
                   Text(
                     "Title",
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
+                    style: greyTextstyle.copyWith(
+                      fontSize: 13,
                       fontWeight: semiBold,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     dt.title.toString(),
-                    style: transTextstyle.copyWith(
-                      color: AppColors.bgGreyTree,
-                      fontSize: 13,
+                    style: blackTextstyle.copyWith(
+                      fontSize: 15,
                       fontWeight: medium,
                     ),
                   ),
@@ -91,18 +89,17 @@ Future<dynamic> informationTaskDash(
 
                   // Sub Title
                   Text(
-                    "Sub Title",
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
+                    "Subtitle",
+                    style: greyTextstyle.copyWith(
+                      fontSize: 13,
                       fontWeight: semiBold,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     dt.subtitle.toString(),
-                    style: transTextstyle.copyWith(
-                      color: AppColors.bgGreyTree,
-                      fontSize: 13,
+                    style: blackTextstyle.copyWith(
+                      fontSize: 15,
                       fontWeight: medium,
                     ),
                   ),
@@ -112,21 +109,21 @@ Future<dynamic> informationTaskDash(
                     const SizedBox(height: 15),
                     Text(
                       "Notes",
-                      style: blackTextstyle.copyWith(
-                        fontSize: 15,
+                      style: greyTextstyle.copyWith(
+                        fontSize: 13,
                         fontWeight: semiBold,
                       ),
                     ),
                     const SizedBox(height: 5),
                     Text(
                       dt.notes.toString(),
-                      style: transTextstyle.copyWith(
-                        color: AppColors.bgGreyTree,
-                        fontSize: 13,
+                      style: blackTextstyle.copyWith(
+                        fontSize: 15,
                         fontWeight: medium,
                       ),
                     ),
                   ],
+                  const SizedBox(height: 45),
                 ],
               ),
             ),
@@ -151,8 +148,10 @@ Future<dynamic> changeDate(
 
   // Buat controller dengan nilai default
   TextEditingController dayController = TextEditingController(text: defaultDay);
-  TextEditingController monthController = TextEditingController(text: defaultMonth);
-  TextEditingController yearController = TextEditingController(text: defaultYear);
+  TextEditingController monthController =
+      TextEditingController(text: defaultMonth);
+  TextEditingController yearController =
+      TextEditingController(text: defaultYear);
 
   return showModalBottomSheet(
     context: context,
@@ -293,8 +292,6 @@ Widget _buildDateInput(
   );
 }
 
-
-
 Future<dynamic> inforTaskRep(
   BuildContext context,
   Size size,
@@ -323,8 +320,7 @@ Future<dynamic> inforTaskRep(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize:
-                    MainAxisSize.min, // Supaya tinggi menyesuaikan isi
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -360,17 +356,16 @@ Future<dynamic> inforTaskRep(
                   // Title
                   Text(
                     "Title",
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
+                    style: greyTextstyle.copyWith(
+                      fontSize: 13,
                       fontWeight: semiBold,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     dt.title.toString(),
-                    style: transTextstyle.copyWith(
-                      color: AppColors.bgGreyTree,
-                      fontSize: 13,
+                    style: blackTextstyle.copyWith(
+                      fontSize: 15,
                       fontWeight: medium,
                     ),
                   ),
@@ -378,18 +373,17 @@ Future<dynamic> inforTaskRep(
 
                   // Sub Title
                   Text(
-                    "Sub Title",
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
+                    "Subtitle",
+                    style: greyTextstyle.copyWith(
+                      fontSize: 13,
                       fontWeight: semiBold,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     dt.subtitle.toString(),
-                    style: transTextstyle.copyWith(
-                      color: AppColors.bgGreyTree,
-                      fontSize: 13,
+                    style: blackTextstyle.copyWith(
+                      fontSize: 15,
                       fontWeight: medium,
                     ),
                   ),
@@ -399,21 +393,21 @@ Future<dynamic> inforTaskRep(
                     const SizedBox(height: 15),
                     Text(
                       "Notes",
-                      style: blackTextstyle.copyWith(
-                        fontSize: 15,
+                      style: greyTextstyle.copyWith(
+                        fontSize: 13,
                         fontWeight: semiBold,
                       ),
                     ),
                     const SizedBox(height: 5),
                     Text(
                       dt.notes.toString(),
-                      style: transTextstyle.copyWith(
-                        color: AppColors.bgGreyTree,
-                        fontSize: 13,
+                      style: blackTextstyle.copyWith(
+                        fontSize: 15,
                         fontWeight: medium,
                       ),
                     ),
                   ],
+                  const SizedBox(height: 45),
                 ],
               ),
             ),

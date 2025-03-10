@@ -6,6 +6,7 @@ import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/data_empty.dart';
 import 'package:mitask/core/utils/loading_helpers.dart';
 import 'package:mitask/core/utils/popup_information_task.dart';
 import 'package:mitask/core/utils/snackbar_extension.dart';
@@ -203,16 +204,6 @@ class _ReportScreenState extends State<ReportScreen> {
       ),
     );
   }
-
-  Widget dataIsEmpty() => Center(
-        child: Text(
-          'Data tidak tersedia.',
-          style: blackTextstyle.copyWith(
-            fontSize: 25,
-            fontWeight: bold,
-          ),
-        ),
-      );
 
   Container exportImport(Size size, String title, icons) {
     return Container(
