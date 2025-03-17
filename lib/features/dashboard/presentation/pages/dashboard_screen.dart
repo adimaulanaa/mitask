@@ -14,6 +14,7 @@ import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/dashboard/data/models/model.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:mitask/features/dashboard/presentation/pages/create_task_screen.dart';
+import 'package:mitask/features/dashboard/presentation/pages/update_task_screen.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_list.dart';
 import 'package:mitask/features/report/presentation/pages/report_screen.dart';
@@ -252,7 +253,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           SizedBox(height: size.height * 0.02),
-          // const Center(child: Text('dashboard')),
           Expanded(
             child: viewListTask.isNotEmpty
                 ? SingleChildScrollView(
@@ -261,7 +261,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return InkWell(
                           splashFactory: NoSplash.splashFactory,
                           highlightColor: Colors.transparent,
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateTaskScreen(dt: e),
+                              ),
+                            );
+                          },
                           child: ViewList(
                             dt: e,
                             size: size,
@@ -277,7 +284,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   .add(DeleteTask(id: e.id.toString()));
                             },
                             onInfo: () {
-                              informationTaskDash(context, size, e);
+                              if (e.updatedOn != null) {
+                                informationTaskDash(context, size, e);
+                              }
                             },
                             onChange: () async {
                               String? selected =
@@ -379,10 +388,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     viewListTask = [];
     viewListTask = listTask;
     if (listTask.isNotEmpty) {
+      DateTime dateFil = DateTime.parse(filterDate);
       List<TaskModel> setDt = listTask.where((task) {
-        return task.dateOn!.year == now.year &&
-            task.dateOn!.month == now.month &&
-            task.dateOn!.day == now.day;
+        return task.dateOn!.year == dateFil.year &&
+            task.dateOn!.month == dateFil.month &&
+            task.dateOn!.day == dateFil.day;
       }).toList();
       // Hitung jumlah task
       int taskToday = setDt.length;
@@ -408,8 +418,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void reloadTask(String id, String date) {
-    context
-        .read<DashboardBloc>()
-        .add(ChangeDateTask(id: id.toString(), date: date));
+    if (date != '') {
+      context
+          .read<DashboardBloc>()
+          .add(ChangeDateTask(id: id.toString(), date: date));
+    }
   }
 }

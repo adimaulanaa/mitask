@@ -24,6 +24,8 @@ class DeleteTaskLoading extends DashboardState {}
 
 class ChangeDateTaskLoading extends DashboardState {}
 
+class UpdateTaskLoading extends DashboardState {}
+
 class DashboardError extends DashboardState {
   final String error;
 
@@ -121,6 +123,23 @@ class ChangeDateTaskError extends DashboardState {
 class ChangeDateTaskSuccess extends DashboardState {
   final ResponseModel data;
   const ChangeDateTaskSuccess(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
+class UpdateTaskError extends DashboardState {
+  final String error;
+
+  const UpdateTaskError(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class UpdateTaskSuccess extends DashboardState {
+  final ResponseModel data;
+  const UpdateTaskSuccess(this.data);
 
   @override
   List<Object> get props => [data];

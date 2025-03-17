@@ -25,90 +25,58 @@ Future<dynamic> informationTaskDash(
     builder: (BuildContext context) {
       DateFormat fullDateFormat = DateFormat('dd MMM yyyy HH:mm:ss');
       String formatdate = fullDateFormat.format(dt.updatedOn!);
-      return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Wrap(
-          // Ganti dari Container ke Wrap agar tinggi menyesuaikan
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Detail Task",
-                        style: blackTextstyle.copyWith(
-                          fontSize: 17,
-                          fontWeight: bold,
+      return DraggableScrollableSheet(  // Tambahkan ini untuk scroll otomatis
+        initialChildSize: 0.5, // Modal terbuka setengah layar dulu
+        minChildSize: 0.3, // Minimal 30% layar
+        maxChildSize: 0.9, // Bisa discroll sampai 90% layar
+        expand: false,
+        builder: (context, scrollController) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: SingleChildScrollView( // Tambahkan ini
+              controller: scrollController, // Supaya scrollnya ngikut DraggableScrollableSheet
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Detail Task",
+                          style: blackTextstyle.copyWith(
+                            fontSize: 17,
+                            fontWeight: bold,
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: SvgPicture.asset(
-                          MediaRes.close,
-                          fit: BoxFit.contain,
-                          width: 25,
-                          // ignore: deprecated_member_use
-                          color: AppColors.primary,
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: SvgPicture.asset(
+                            MediaRes.close,
+                            fit: BoxFit.contain,
+                            width: 25,
+                            // ignore: deprecated_member_use
+                            color: AppColors.primary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    '$formatdate - ${dt.isType}',
-                    style: transTextstyle.copyWith(
-                      color: AppColors.bgGreyTree,
-                      fontSize: 12,
-                      fontWeight: medium,
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Title
-                  Text(
-                    "Title",
-                    style: greyTextstyle.copyWith(
-                      fontSize: 13,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    dt.title.toString(),
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
-                      fontWeight: medium,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-
-                  // Sub Title
-                  Text(
-                    "Subtitle",
-                    style: greyTextstyle.copyWith(
-                      fontSize: 13,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    dt.subtitle.toString(),
-                    style: blackTextstyle.copyWith(
-                      fontSize: 15,
-                      fontWeight: medium,
-                    ),
-                  ),
-
-                  // Notes (Jika Ada)
-                  if (dt.notes!.isNotEmpty) ...[
-                    const SizedBox(height: 15),
                     Text(
-                      "Notes",
+                      '$formatdate - ${dt.isType}',
+                      style: transTextstyle.copyWith(
+                        color: AppColors.bgGreyTree,
+                        fontSize: 12,
+                        fontWeight: medium,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Title
+                    Text(
+                      "Title",
                       style: greyTextstyle.copyWith(
                         fontSize: 13,
                         fontWeight: semiBold,
@@ -116,19 +84,55 @@ Future<dynamic> informationTaskDash(
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      dt.notes.toString(),
+                      dt.title.toString(),
                       style: blackTextstyle.copyWith(
                         fontSize: 15,
                         fontWeight: medium,
                       ),
                     ),
+                    const SizedBox(height: 15),
+                    // Sub Title
+                    Text(
+                      "Subtitle",
+                      style: greyTextstyle.copyWith(
+                        fontSize: 13,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      dt.subtitle.toString(),
+                      style: blackTextstyle.copyWith(
+                        fontSize: 15,
+                        fontWeight: medium,
+                      ),
+                    ),
+                    // Notes (Jika Ada)
+                    if (dt.notes!.isNotEmpty) ...[
+                      const SizedBox(height: 15),
+                      Text(
+                        "Notes",
+                        style: greyTextstyle.copyWith(
+                          fontSize: 13,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        dt.notes.toString(),
+                        style: blackTextstyle.copyWith(
+                          fontSize: 15,
+                          fontWeight: medium,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 45),
                   ],
-                  const SizedBox(height: 45),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       );
     },
   );

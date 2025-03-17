@@ -31,6 +31,14 @@ class CreateTask extends DashboardEvent {
   List<Object> get props => [];
 }
 
+class UpdateTask extends DashboardEvent {
+  final TaskModel data;
+  const UpdateTask({required this.data});
+
+  @override
+  List<Object> get props => [];
+}
+
 class Checklist extends DashboardEvent {
   final String id;
   final String data;

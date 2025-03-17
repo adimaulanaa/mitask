@@ -15,14 +15,15 @@ import 'package:mitask/features/dashboard/presentation/bloc/dashboard_state.dart
 import 'package:mitask/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/view_date.dart';
 
-class CreateTaskScreen extends StatefulWidget {
-  const CreateTaskScreen({super.key});
+class UpdateTaskScreen extends StatefulWidget {
+  final TaskModel dt;
+  const UpdateTaskScreen({super.key, required this.dt});
 
   @override
-  State<CreateTaskScreen> createState() => _CreateTaskScreenState();
+  State<UpdateTaskScreen> createState() => _UpdateTaskScreenState();
 }
 
-class _CreateTaskScreenState extends State<CreateTaskScreen> {
+class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
   final ScrollController _scrollController = ScrollController();
   final titleController = TextEditingController();
   final subtitleController = TextEditingController();
@@ -30,6 +31,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   final typeController = TextEditingController();
 
   List<DateModel> listDate = [];
+  TaskModel task = TaskModel();
   DateTime now = DateTime.now();
   DateTime? dateOn;
   String? selectedType;
@@ -39,11 +41,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<DashboardBloc>().add(const GetDashboard());
+    loadDataTask();
   }
 
-  void scrollToToday() {
-    int todayIndex = listDate.indexWhere((e) => e.date == now.day.toString());
+  void scrollToToday(String day) {
+    int todayIndex = listDate.indexWhere((e) => e.date == day);
     if (todayIndex != -1) {
       double targetOffset = todayIndex * 70.0; // 70 = perkiraan lebar tiap item
       _scrollController.animateTo(
@@ -62,7 +64,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.bgColor,
         title: Text(
-          StringResources.createTask,
+          StringResources.updateTask,
           style: blackTextstyle.copyWith(
             fontSize: 20,
             fontWeight: bold,
@@ -94,7 +96,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       ),
       body: BlocListener<DashboardBloc, DashboardState>(
         listener: (context, state) {
-          if (state is CreateTaskError) {
+          if (state is UpdateTaskError) {
             if (state.error != '') {
               context.showErrorSnackBar(
                 state.error,
@@ -108,13 +110,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                 onNavigate: () {}, // bottom close
               );
             }
-          } else if (state is CreateTaskSuccess) {
+          } else if (state is UpdateTaskSuccess) {
             if (state.data.isSucces) {
-              titleController.text = '';
-              subtitleController.text = '';
-              notesController.text = '';
-              typeController.text = '';
-              context.read<DashboardBloc>().add(const GetDashboard());
               context.showSuccesSnackBar(
                 state.data.message,
                 onNavigate: () {}, // bottom close
@@ -123,9 +120,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           } else if (state is DashboardLoaded) {
             if (state.data.isNotEmpty) {
               listDate = state.data;
-              dateOn = now;
-              inDay = now.day.toString();
-              scrollToToday();
+              // dateOn = now;
+              // inDay = now.day.toString();
+              scrollToToday(inDay);
             }
           }
         },
@@ -134,7 +131,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
             return Stack(
               children: [
                 _bodyData(context, size), // Latar belakang utama
-                if (state is DashboardLoading || state is CreateTaskLoading) ...[
+                if (state is DashboardLoading || state is UpdateTaskLoading) ...[
                   // Layar semi-transparan gelap
                   Container(
                     color: Colors.black.withOpacity(0.5),
@@ -159,17 +156,17 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
             microsecond: now.microsecond,
           );
           TaskModel create = TaskModel(
-            id: '',
+            id: task.id,
             title: titleController.text,
             subtitle: subtitleController.text,
             notes: notesController.text,
-            isStatus: 'false',
+            isStatus: task.isStatus,
             isType: selectedType ?? '',
             dateOn: updatedDateTime,
-            createdOn: now,
+            createdOn: task.createdOn,
             updatedOn: now,
           );
-          context.read<DashboardBloc>().add(CreateTask(data: create));
+          context.read<DashboardBloc>().add(UpdateTask(data: create));
         },
         child: Container(
           width: size.width * 0.9,
@@ -340,5 +337,21 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       minLines: minLines,
       maxLines: null,
     );
+  }
+  
+  void loadDataTask() {
+    if (widget.dt.id != '') {
+      task = widget.dt;
+      titleController.text = task.title.toString();
+      subtitleController.text = task.subtitle.toString();
+      notesController.text = task.notes.toString();
+      selectedType = task.isType;
+      dateOn =  DateTime.parse(task.dateOn.toString());
+      inDay = dateOn!.day.toString();
+
+      // scrollToToday(inDay);
+
+      context.read<DashboardBloc>().add(const GetDashboard());
+    }
   }
 }

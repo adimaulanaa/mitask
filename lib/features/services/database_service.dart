@@ -254,4 +254,32 @@ class DatabaseService {
       throw Exception('Error: $e');
     }
   }
+
+  Future<ResponseModel> updateTask(TaskModel dt) async {
+  try {
+    final db = await _dBService.database;
+    
+    // Pastikan id tidak null sebelum update
+    if (dt.id == null) {
+      return ResponseModel(isSucces: false, message: 'Error: ID tidak boleh null');
+    }
+
+    // Update data berdasarkan ID
+    int count = await db.update(
+      'ms_task',
+      dt.toMap(),
+      where: '_id = ?',
+      whereArgs: [dt.id],
+    );
+
+    if (count > 0) {
+      return ResponseModel(isSucces: true, message: 'Berhasil memperbarui task');
+    } else {
+      return ResponseModel(isSucces: false, message: 'Task tidak ditemukan');
+    }
+  } catch (e) {
+    return ResponseModel(isSucces: false, message: 'Error: $e');
+  }
+}
+
 }
