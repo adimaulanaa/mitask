@@ -110,6 +110,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
             }
           } else if (state is CreateTaskSuccess) {
             if (state.data.isSucces) {
+              titleController.text = '';
+              subtitleController.text = '';
+              notesController.text = '';
+              typeController.text = '';
               context.showSuccesSnackBar(
                 state.data.message,
                 onNavigate: () {}, // bottom close

@@ -408,41 +408,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void reloadTask(String id, String date) {
-    bool inputDate = isValidDate(date);
-    if (inputDate) {
-      context
-          .read<DashboardBloc>()
-          .add(ChangeDateTask(id: id.toString(), date: date));
-    } else {
-      context.showErrorSnackBar(
-        'Tanggal tidak tersedia, coba lagi',
-        onNavigate: () {}, // bottom close
-      );
-    }
-  }
-
-  bool isValidDate(String date) {
-    try {
-      List<String> parts = date.split(" ");
-      String datePart = parts[0]; // Ambil bagian tanggal, misalnya "2025-02-29"
-
-      List<String> dateComponents = datePart.split("-");
-      if (dateComponents.length != 3) return false;
-
-      int year = int.parse(dateComponents[0]);
-      int month = int.parse(dateComponents[1]);
-      int day = int.parse(dateComponents[2]);
-
-      // ✅ Pastikan bulan dalam rentang yang benar (1 - 12)
-      if (month < 1 || month > 12) return false;
-
-      // ✅ Pastikan hari tidak melebihi jumlah hari dalam bulan itu
-      int maxDaysInMonth = DateTime(year, month + 1, 0).day;
-      if (day < 1 || day > maxDaysInMonth) return false;
-
-      return true; // ✅ Tanggal valid
-    } catch (e) {
-      return false; // ❌ Jika ada error, berarti tanggal tidak valid
-    }
+    context
+        .read<DashboardBloc>()
+        .add(ChangeDateTask(id: id.toString(), date: date));
   }
 }

@@ -78,9 +78,9 @@ class DatabaseService {
             notes: e['notes']?.toString() ?? '',
             isStatus: e['is_status'] ?? 'false',
             isType: e['is_type']?.toString() ?? '',
-            dateOn: DateTime.tryParse(e['date_on'].toString()),
-            createdOn: DateTime.tryParse(e['created_on'].toString()),
-            updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+            dateOn: DateTime.parse(e['date_on'].toString()),
+            createdOn: DateTime.parse(e['created_on'].toString()),
+            updatedOn: DateTime.parse(e['updated_on'].toString()),
           ),
         );
       }
@@ -108,9 +108,9 @@ class DatabaseService {
             notes: e['notes']?.toString() ?? '',
             isStatus: e['is_status'] ?? 'false',
             isType: e['is_type']?.toString() ?? '',
-            dateOn: DateTime.tryParse(e['date_on'].toString()),
-            createdOn: DateTime.tryParse(e['created_on'].toString()),
-            updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+            dateOn: DateTime.parse(e['date_on'].toString()),
+            createdOn: DateTime.parse(e['created_on'].toString()),
+            updatedOn: DateTime.parse(e['updated_on'].toString()),
           ),
         );
       }
@@ -216,9 +216,9 @@ class DatabaseService {
           notes: e['notes']?.toString() ?? '',
           isStatus: e['is_status'] ?? 'false',
           isType: e['is_type']?.toString() ?? '',
-          dateOn: DateTime.tryParse(e['date_on'].toString()),
-          createdOn: DateTime.tryParse(e['created_on'].toString()),
-          updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+          dateOn: DateTime.parse(e['date_on'].toString()),
+          createdOn: DateTime.parse(e['created_on'].toString()),
+          updatedOn: DateTime.parse(e['updated_on'].toString()),
         );
       }).toList();
 
@@ -243,9 +243,9 @@ class DatabaseService {
             notes: e['notes']?.toString() ?? '',
             isStatus: e['is_status'] ?? 'false',
             isType: e['is_type']?.toString() ?? '',
-            dateOn: DateTime.tryParse(e['date_on'].toString()),
-            createdOn: DateTime.tryParse(e['created_on'].toString()),
-            updatedOn: DateTime.tryParse(e['updated_on'].toString()),
+            dateOn: DateTime.parse(e['date_on'].toString()),
+            createdOn: DateTime.parse(e['created_on'].toString()),
+            updatedOn: DateTime.parse(e['updated_on'].toString()),
           ),
         );
       }

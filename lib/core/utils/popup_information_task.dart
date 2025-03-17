@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mitask/core/media/media_colors.dart';
@@ -7,6 +6,7 @@ import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/features/dashboard/data/models/dashboard_model.dart';
 import 'package:mitask/features/report/data/models/report_model.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 Future<dynamic> informationTaskDash(
   BuildContext context,
@@ -139,19 +139,7 @@ Future<dynamic> changeDate(
   Size size,
   DateTime? initialDate,
 ) {
-  // Jika tidak ada custom, pakai DateTime.now()
-  DateTime initDate = initialDate ?? DateTime.now();
-
-  String defaultDay = initDate.day.toString().padLeft(2, '0');
-  String defaultMonth = initDate.month.toString().padLeft(2, '0');
-  String defaultYear = initDate.year.toString();
-
-  // Buat controller dengan nilai default
-  TextEditingController dayController = TextEditingController(text: defaultDay);
-  TextEditingController monthController =
-      TextEditingController(text: defaultMonth);
-  TextEditingController yearController =
-      TextEditingController(text: defaultYear);
+  DateTime selectedDate = initialDate ?? DateTime.now();
 
   return showModalBottomSheet(
     context: context,
@@ -163,134 +151,135 @@ Future<dynamic> changeDate(
       ),
     ),
     builder: (BuildContext context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Wrap(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Wrap(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        "Change Date Task",
-                        style: blackTextstyle.copyWith(
-                          fontSize: 17,
-                          fontWeight: bold,
-                        ),
+                      // Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Change Date Task",
+                            style: blackTextstyle.copyWith(
+                              fontSize: 17,
+                              fontWeight: bold,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () => Navigator.pop(context),
+                            child: SvgPicture.asset(
+                              MediaRes.close,
+                              fit: BoxFit.contain,
+                              width: 25,
+                              // ignore: deprecated_member_use
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 20),
+                      // Calendar
+                      TableCalendar(
+                        firstDay: DateTime.utc(2025, 1, 1),
+                        lastDay: DateTime.utc(2030, 12, 31),
+                        focusedDay: selectedDate,
+                        selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+                        headerStyle: const HeaderStyle(
+                          titleCentered: true,
+                          formatButtonVisible: false,
+                          leftChevronIcon: SizedBox.shrink(),
+                          rightChevronIcon: SizedBox.shrink(),
+                        ),
+                        calendarStyle: const CalendarStyle(
+                          isTodayHighlighted: false,
+                          selectedDecoration: BoxDecoration(),
+                        ),
+                        availableGestures: AvailableGestures.none,
+                        calendarBuilders: CalendarBuilders(
+                          selectedBuilder: (context, date, _) {
+                            return Container(
+                              margin: const EdgeInsets.all(4),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: AppColors.bgMain, width: 2),
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.bgMain.withOpacity(0.1),
+                              ),
+                              child: Text(
+                                '${date.day}',
+                                style: blackTextstyle.copyWith(
+                                  fontWeight: bold,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            selectedDate = selectedDay;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Tombol Simpan
                       InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: SvgPicture.asset(
-                          MediaRes.close,
-                          fit: BoxFit.contain,
-                          width: 25,
-                          // ignore: deprecated_member_use
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Hari
-                      _buildDateInput(dayController, "DD", size.width * 0.25),
-                      // Bulan
-                      _buildDateInput(monthController, "MM", size.width * 0.25),
-                      // Tahun
-                      _buildDateInput(
-                          yearController, "YYYY", size.width * 0.25),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  InkWell(
-                    onTap: () {
-                      String day = dayController.text.padLeft(2, '0');
-                      String month = monthController.text.padLeft(2, '0');
-                      String year = yearController.text;
-
-                      if (day.isNotEmpty &&
-                          month.isNotEmpty &&
-                          year.isNotEmpty) {
-                        // Ambil waktu sekarang
-                        DateTime now = DateTime.now();
-                        String timeNow =
-                            "${now.hour}:${now.minute}:${now.second}.${now.millisecond}";
-
-                        // Gabungkan dengan tanggal input
-                        String dateString = "$year-$month-$day $timeNow";
-                        Navigator.pop(context, dateString);
-                      }
-                    },
-                    child: Container(
-                      width: size.width * 0.9,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: AppColors.primary,
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Simpan',
-                          style: whiteTextstyle.copyWith(
-                            fontSize: 19,
-                            fontWeight: bold,
+                        onTap: () {
+                          DateTime now = DateTime.now();
+                          DateTime finalDateTime = DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            now.hour,
+                            now.minute,
+                            now.second,
+                            now.millisecond,
+                            now.microsecond,
+                          );
+                          String dateString = finalDateTime.toString();
+                          Navigator.pop(context, dateString);
+                        },
+                        child: Container(
+                          width: size.width * 0.9,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: AppColors.primary,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Simpan',
+                              style: whiteTextstyle.copyWith(
+                                fontSize: 19,
+                                fontWeight: bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       );
     },
   );
 }
 
-// Widget untuk Input Text Date
-Widget _buildDateInput(
-    TextEditingController controller, String hint, double width) {
-  return SizedBox(
-    width: width,
-    child: TextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      textAlign: TextAlign.center,
-      maxLength: hint == "YYYY" ? 4 : 2,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: InputDecoration(
-        counterText: "",
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.bgGreySecond, width: 2),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.bgGreySecond, width: 2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        ),
-        filled: true,
-        fillColor: AppColors.bgColor,
-      ),
-    ),
-  );
-}
 
 Future<dynamic> inforTaskRep(
   BuildContext context,
