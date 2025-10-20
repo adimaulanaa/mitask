@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color bgScreen = Color(0xFFFFFFFF);
-  static const Color bgTrans = Colors.transparent;
-  static const Color bgMain = Color(0xFFCAF4FF);
-  static const Color bgColor = Color(0xFFFFFFFF);
-  static const Color bgBlack = Color(0xFF000000);
-  static const Color bgGrey = Color(0xFF9A9A9A);
-  static const Color bgGreySecond = Color(0xFFF2F2F2);
-  static const Color bgGreyTree = Color(0xFFB7B7B7);
-  static const Color bgBlue = Color(0xFF006BFF);
-  static const Color bgGreen = Color(0xFF36BB38);
-  static const Color bgYellow = Color(0xFFFFEB00);
-  static const Color bgOrange = Color(0xFFFFA53A);
-  static const Color bgRed = Color(0xFFFF0000);
+  // 🌿 BRAND COLORS
+  static const Color primary = Color(0xFF88C9A1); // Mint utama
+  static const Color primaryDark = Color(0xFF6EAE89); // Mint sedikit gelap
+  static const Color primaryLight = Color(0xFFA8DAB9); // Mint lebih terang
 
+  // 🪴 BACKGROUND & SURFACE
+  static const Color background = Color(
+    0xFFF5FBF7,
+  ); // Background utama (super soft)
+  static const Color surface = Color(0xFFFFFFFF); // Card, container, sheet
+  static const Color surfaceVariant = Color(
+    0xFFE6F3EC,
+  ); // Surface sekunder (accent)
 
-  static const Color primary = Color(0xFF49B873);
-  static const Color secondary = Color(0xFFE8F7F4);
-  static const Color tertiary = Color(0xFFC4D7FF);
+  // ✨ BORDER & DIVIDER
+  static const Color border = Color(0xFFD3E6DA); // Border soft
+  static const Color divider = Color(0xFFBFDCC8); // Divider lebih kontras dikit
+
+  // 📝 TEXT COLORS
+  static const Color textPrimary = Color(0xFF1E1E1E); // Teks utama
+  static const Color textSecondary = Color(0xFF4A4A4A); // Teks sekunder
+  static const Color textTertiary = Color(0xFF7A7A7A); // Teks hint / label
+  static const Color textOnPrimary = Color(
+    0xFFFFFFFF,
+  ); // Teks di atas tombol mint
+
+  // 🟢 STATE COLORS (Status / Feedback)
+  static const Color success = Color(0xFF6BBF8D); // Hijau sukses (lebih tegas)
+  static const Color warning = Color(0xFFFFC94A); // Kuning soft
+  static const Color error = Color(
+    0xFFE57373,
+  ); // Merah soft (tidak menyakitkan mata)
+  static const Color info = Color(0xFF7CA9C2); // Biru lembut untuk info
+
+  // 🌙 DISABLED / INACTIVE
+  static const Color disabledBg = Color(0xFFE8F0EB);
+  static const Color disabledText = Color(0xFF9FAFA5);
+
+  // 🌫️ SHADOW & OVERLAY
+  static const Color shadow = Color(0x1A000000); // 10% opacity black
+  static const Color overlay = Color(0x33000000); // 20% opacity black
+}
+
+class AppDarkColors {
+  static const Color background = Color(0xFF1E1F1E);
+  static const Color surface = Color(0xFF2C2F2C);
+  static const Color primary = Color(0xFF88C9A1);
+  static const Color textPrimary = Color(0xFFF4FBF7);
+  static const Color textSecondary = Color(0xFFBFDCC8);
 }

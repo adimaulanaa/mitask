@@ -28,13 +28,14 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: AppColors.primary,
       body: Center(
         child: Image.asset(
           MediaRes.omboarding, // Ganti dengan path gambar Anda
-          width: MediaQuery.of(context).size.width * 0.9,
-          height: MediaQuery.of(context).size.height * 0.25,
+          width: MediaQuery.of(context).size.width * 0.7,
+          height: MediaQuery.of(context).size.height * 0.2,
           fit: BoxFit.contain,
+          color: AppColors.background,
         ),
       ),
     );

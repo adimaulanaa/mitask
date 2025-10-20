@@ -30,14 +30,14 @@ class CustomScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor ?? AppColors.bgColor,
+      backgroundColor: backgroundColor ?? AppColors.background,
       appBar: showAppBar
           ? AppBar(
               elevation: 0,
               scrolledUnderElevation: 0.0,
               surfaceTintColor:
                   Colors.transparent, // hilangkan background saat scroll
-              backgroundColor: backgroundColor ?? AppColors.bgColor,
+              backgroundColor: backgroundColor ?? AppColors.background,
               centerTitle: true,
               leading: showBackButton
                   ? IconButton(
@@ -47,7 +47,7 @@ class CustomScaffold extends StatelessWidget {
                         width: 23,
                         height: 23,
                         colorFilter: const ColorFilter.mode(
-                          AppColors.bgBlack,
+                          AppColors.textPrimary,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -56,7 +56,7 @@ class CustomScaffold extends StatelessWidget {
               title: title != null
                   ? Text(
                       title!,
-                      style: blackTextstyle.copyWith(fontWeight: bold),
+                      style: AppTextStyle.h3.copyWith(fontWeight: semiBold),
                     )
                   : null,
               actions: actions,

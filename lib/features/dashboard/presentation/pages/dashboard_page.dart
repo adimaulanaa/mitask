@@ -17,7 +17,7 @@ class _DashboardPageState extends State<DashboardPage> {
       body: Center(
         child: Text(
           'Dashboard Page',
-          style: blackTextstyle.copyWith(fontSize: 20, fontWeight: bold),
+          style: AppTextStyle.body,
         ),
       ),
     );
