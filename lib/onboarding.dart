@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
-import 'package:mitask/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:mitask/navigator_page.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
@@ -19,7 +19,7 @@ class _OnboardingState extends State<Onboarding> {
         // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
-          builder: (context) => const DashboardPage(),
+          builder: (context) => const NavigatorPage(),
         ),
       );
     });

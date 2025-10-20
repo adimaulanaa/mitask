@@ -17,6 +17,7 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
 
   @override
   Future<List<DateModel>> dash() async {
+    Future.delayed(Duration(seconds: 20));
     return [];
   }
 }

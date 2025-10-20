@@ -22,7 +22,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     result.fold(
       (failure) => emit(DashboardFailure(message: failure.message)),
-      (success) => emit(DashboardSucces(data: success)),
+      (success) => emit(DashboardLoaded(data: success)),
     );
   }
 }

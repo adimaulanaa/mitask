@@ -11,10 +11,10 @@ abstract class DashboardState extends Equatable {
 class DashboardInitial extends DashboardState {}
 
 class DashboardLoading extends DashboardState {}
-class DashboardSucces extends DashboardState {
+class DashboardLoaded extends DashboardState {
   final List<DateModel> data;
 
-  const DashboardSucces({required this.data});
+  const DashboardLoaded({required this.data});
 
   @override
   List<Object?> get props => [data];
