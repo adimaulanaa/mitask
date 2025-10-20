@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:mitask/core/media/media_colors.dart';
+import 'package:mitask/core/media/media_res.dart';
+import 'package:mitask/features/dashboard/presentation/pages/dashboard_page.dart';
+
+class Onboarding extends StatefulWidget {
+  const Onboarding({super.key});
+
+  @override
+  State<Onboarding> createState() => _OnboardingState();
+}
+
+class _OnboardingState extends State<Onboarding> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 4), () {
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DashboardPage(),
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bgColor,
+      body: Center(
+        child: Image.asset(
+          MediaRes.omboarding, // Ganti dengan path gambar Anda
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.25,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+}

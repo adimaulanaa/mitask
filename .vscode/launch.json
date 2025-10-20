@@ -1,0 +1,20 @@
+{
+  // Konfigurasi debugging di VS Code.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Debug Configuration
+      "name": "Debug (FVM)",
+      "request": "launch",
+      "type": "dart",
+      // Menggunakan FVM sebagai path Flutter executable
+      // Ini akan memastikan VS Code menggunakan versi Flutter yang dikelola FVM
+      "flutterMode": "debug",
+      "program": "lib/main.dart",
+      "toolArgs": ["--suppress-analytics"]
+      // 'dart' path diubah ke path FVM:
+      // "dartPath": ".fvm/flutter_sdk/bin/dart",
+      // "flutterPath": ".fvm/flutter_sdk/bin/flutter"
+    }
+  ]
+}
