@@ -11,6 +11,25 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Report Page', style: AppTextStyle.body));
+    return Scaffold(body: ListView(
+      children: [
+        Container(
+                  height: 30,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
+                ),
+        Center(child: Text('Report Page', style: AppTextStyle.body)),
+      ],
+    ));
   }
 }
