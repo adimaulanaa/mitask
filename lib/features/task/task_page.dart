@@ -4,6 +4,7 @@ import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_text_field.dart';
+import 'package:mitask/features/task/custom_floating.dart';
 import 'package:mitask/features/task/list_task.dart';
 import 'package:mitask/features/task/widget_task.dart';
 
@@ -22,26 +23,50 @@ class _TaskPageState extends State<TaskPage> {
   bool isPin = false;
   bool isFav = false;
   bool isArch = false;
-  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: null,
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-        child: ListView(
-          children: [
-            SearchTextField(hintText: 'Cari Task..', controller: searchCtr),
-            SizedBox(height: 10),
-            isFilter ? _advFilter() : _iconsFilter(),
-            SizedBox(height: 10),
-            ListTask(),
-          ],
-        ),
+  // Catatan: SizedBox(height: size.height * 0.08) tidak diperlukan lagi
+
+  return Scaffold(
+    backgroundColor: AppColors.background,
+    appBar: null,
+    body: Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+      child: Column(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                SearchTextField(hintText: 'Cari Task..', controller: searchCtr),
+                const SizedBox(height: 10),
+                isFilter ? _advFilter() : _iconsFilter(),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+          Expanded( 
+            child: ListView.builder(
+              padding: const EdgeInsets.only(
+                bottom: 70, 
+              ),
+              itemCount: 10, 
+              itemBuilder: (context, index) {
+                return const ListTask(); 
+              },
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+    floatingActionButton: CustomExpandedFAB(
+      onPressed: () {
+        debugPrint('Tombol Add Task Kustom Ditekan');
+      },
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  );
+}
 
   Widget _iconsFilter() {
     return Row(
