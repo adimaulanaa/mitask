@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
+import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:mitask/features/report/report_page.dart';
@@ -119,17 +120,16 @@ class _NavigatorPageState extends State<NavigatorPage> {
               BlendMode.srcIn,
             ),
           ),
-          // const SizedBox(height: 4),
-          // Text(
-          //   label,
-          //   textAlign: TextAlign.center,
-          //   style: transTextstyle.copyWith(
-          //     fontSize: 12,
-          //     fontWeight: medium,
-          //     color: isSelected ? AppColors.primary : AppColors.textTitle,
-          //   ),
-          // ),
-          SizedBox(height: 5),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: AppTextStyle.small.copyWith(
+              fontWeight: isSelected ? semiBold : medium,
+              color: isSelected ? AppColors.primary : AppColors.textTertiary,
+            ),
+          ),
+          // SizedBox(height: 5),
         ],
       ),
     );
