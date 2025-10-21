@@ -15,7 +15,10 @@ class MediaRes {
   // ! Onboarding
   static const omboarding = '$_baseImage/logo-basic.png';
 
-
-
+  // ! Dashboard
+  static const pinned = '$_baseIcon/pinned.svg';
+  static const favorite = '$_baseIcon/favorite.svg';
+  static const totalTask = '$_baseIcon/total-task.svg';
+  static const archived = '$_baseIcon/archived.svg';
   
 }

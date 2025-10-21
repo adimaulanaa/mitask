@@ -3,35 +3,45 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 class DatabaseService {
-  // Singleton Pattern: Memastikan hanya ada satu instance dari DatabaseService
+  // Singleton Pattern: hanya satu instance aktif
   static final DatabaseService _dBService = DatabaseService._internal();
   factory DatabaseService() => _dBService;
   DatabaseService._internal();
 
-  // Konstan untuk Database dan Nama Tabel/Kolom
+  // Konstanta Database
   static const String _dbName = 'mitask_database.db';
-  static const int _dbVersion = 1;
+  static const int _dbVersion = 2;
 
+  // Nama Tabel
   static const String taskTable = 'ms_task';
+
   // Nama Kolom
   static const String taskId = '_id';
   static const String taskTitle = 'title';
   static const String taskSubtitle = 'subtitle';
   static const String taskNotes = 'notes';
-  static const String taskIsStatus = 'is_status'; // INTEGER: 0=false, 1=true
+  static const String taskIsStatus = 'is_status';
+  static const String taskStatusName = 'status_name';
   static const String taskIsType = 'is_type';
-  static const String taskDateOn = 'date_on';     // INTEGER: Unix Timestamp (milidetik)
-  static const String taskCreatedOn = 'created_on'; // INTEGER: Unix Timestamp
-  static const String taskUpdatedOn = 'updated_on'; // INTEGER: Unix Timestamp
+  static const String taskIsFavorite = 'is_favorite';
+  static const String taskIsArchived = 'is_archived';
+  static const String taskPriority = 'priority';
+  static const String taskReminderOn = 'reminder_on';
+  static const String taskDateOn = 'date_on';
+  static const String taskCreatedOn = 'created_on';
+  static const String taskUpdatedOn = 'updated_on';
+  static const String taskDeletedOn = 'deleted_on';
+  static const String taskColorTag = 'color_tag';
+  static const String taskIsPinned = 'is_pinned';
+  static const String taskSyncStatus =
+      'sync_status'; // 0 = belum sync, 1 = sudah sync
 
   final uuid = const Uuid();
 
   // Membuat ID unik menggunakan UUID v4
-  String generateUniqueId() {
-    return uuid.v4(); 
-  }
+  String generateUniqueId() => uuid.v4();
 
-  // Lazy Loading untuk Database
+  // Lazy Loading Database
   static Database? _database;
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -39,41 +49,56 @@ class DatabaseService {
     return _database!;
   }
 
-  // --- INISIALISASI DATABASE ---
+  // Inisialisasi Database
   Future<Database> _initDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, _dbName);
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, _dbName);
 
     return await openDatabase(
       path,
-      onCreate: _onCreate,
       version: _dbVersion,
-      // Mengaktifkan Foreign Keys (jika nanti Anda butuh relasi)
+      onCreate: _onCreate,
       onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'),
+      onUpgrade: _onUpgrade,
     );
   }
 
-  // --- MEMBUAT TABEL KETIKA DATABASE BARU DIBUAT ---
+  // Membuat tabel ketika database baru dibuat
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(
-      '''
+    await db.execute('''
       CREATE TABLE $taskTable (
         $taskId TEXT PRIMARY KEY,
         $taskTitle TEXT,
         $taskSubtitle TEXT,
         $taskNotes TEXT,
-        $taskIsStatus INTEGER DEFAULT 0,  
+        $taskIsStatus INTEGER DEFAULT 0,
+        $taskStatusName TEXT,
         $taskIsType TEXT,
+        $taskIsFavorite INTEGER DEFAULT 0,
+        $taskIsArchived INTEGER DEFAULT 0,
+        $taskPriority INTEGER DEFAULT 0,
+        $taskReminderOn INTEGER,
         $taskDateOn INTEGER,
         $taskCreatedOn INTEGER,
-        $taskUpdatedOn INTEGER
-      )
-      ''',
-    );
-    // Tambahkan tabel lain di sini jika diperlukan di masa mendatang.
+        $taskUpdatedOn INTEGER,
+        $taskDeletedOn INTEGER,
+        $taskColorTag TEXT,
+        $taskIsPinned INTEGER DEFAULT 0,
+        $taskSyncStatus INTEGER DEFAULT 0
+      );
+    ''');
   }
 
-  // --- CONTOH FUNGSI CRUD (INSERT) ---
+  // Menangani upgrade versi database
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // if (oldVersion < 2) {
+    //   await db.execute(
+    //     'ALTER TABLE $taskTable ADD COLUMN $taskSyncStatus INTEGER DEFAULT 0',
+    //   );
+    // }
+  }
+
+  // CRUD: INSERT
   Future<int> insertTask(Map<String, dynamic> data) async {
     final db = await database;
     return await db.insert(
@@ -81,5 +106,93 @@ class DatabaseService {
       data,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  // CRUD: GET ALL TASKS
+  Future<List<Map<String, dynamic>>> getAllTasks() async {
+    final db = await database;
+    return await db.query(
+      taskTable,
+      orderBy: '$taskIsPinned DESC, $taskUpdatedOn DESC',
+    );
+  }
+
+  // CRUD: GET BY ID
+  Future<Map<String, dynamic>?> getTaskById(String id) async {
+    final db = await database;
+    final result = await db.query(
+      taskTable,
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+    return result.isNotEmpty ? result.first : null;
+  }
+
+  // CRUD: UPDATE
+  Future<int> updateTask(String id, Map<String, dynamic> data) async {
+    final db = await database;
+    data[taskUpdatedOn] = DateTime.now().millisecondsSinceEpoch;
+    return await db.update(
+      taskTable,
+      data,
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // CRUD: DELETE (Soft Delete)
+  Future<int> deleteTask(String id) async {
+    final db = await database;
+    return await db.update(
+      taskTable,
+      {taskDeletedOn: DateTime.now().millisecondsSinceEpoch},
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Hapus permanen (Hard Delete)
+  Future<int> hardDeleteTask(String id) async {
+    final db = await database;
+    return await db.delete(taskTable, where: '$taskId = ?', whereArgs: [id]);
+  }
+
+  // Helper: Toggle Pin/Favorite/Archive
+  Future<void> toggleFavorite(String id, bool isFavorite) async {
+    final db = await database;
+    await db.update(
+      taskTable,
+      {taskIsFavorite: isFavorite ? 1 : 0},
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> togglePinned(String id, bool isPinned) async {
+    final db = await database;
+    await db.update(
+      taskTable,
+      {taskIsPinned: isPinned ? 1 : 0},
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> toggleArchived(String id, bool isArchived) async {
+    final db = await database;
+    await db.update(
+      taskTable,
+      {taskIsArchived: isArchived ? 1 : 0},
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Close Database
+  Future<void> closeDatabase() async {
+    final db = _database;
+    if (db != null && db.isOpen) {
+      await db.close();
+    }
   }
 }

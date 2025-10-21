@@ -7,6 +7,7 @@ import 'package:mitask/core/utils/custom_popup.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:mitask/features/dashboard/presentation/widgets/dashboard_stats.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -17,13 +18,15 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late DashboardBloc _dashboardBloc;
+  String myName = 'Adi';
+  int notes = 0;
 
   @override
   void initState() {
     super.initState();
     _dashboardBloc = context.read<DashboardBloc>();
   }
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,24 +58,64 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _bodyForm(BuildContext context, Size size) {
     return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            height: size.height * 0.31,
-            width: size.width,
-            padding: const EdgeInsets.only(left: 20),
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+        child: ListView(
+          children: [
+            buildGreetingSection(myName, notes),
+            SizedBox(height: 15),
+            Text(
+              'Quick Stats',
+              style: AppTextStyle.textPrimary.copyWith(
+                fontWeight: bold,
+                fontSize: 18,
               ),
             ),
-          ),
-
-          Center(child: Text('Dashboard Page', style: AppTextStyle.body)),
-        ],
+            SizedBox(height: 7),
+            QuickStatsSection(
+              totalTask: 24,
+              pinnedTask: 5,
+              favoriteTask: 4,
+              archivedTask: 5,
+            ),
+            SizedBox(height: 15),
+            Text(
+              'Recent Task',
+              style: AppTextStyle.textPrimary.copyWith(
+                fontWeight: bold,
+                fontSize: 18,
+              ),
+            ),
+            RecentTask(),
+            RecentTask(),
+            RecentTask(),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget buildGreetingSection(String myName, int notes) {
+    final bool hasTasks = notes > 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Hi, $myName 👋',
+          style: AppTextStyle.primaryDark.copyWith(
+            fontWeight: bold,
+            fontSize: 24,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          hasTasks
+              ? 'Ada $notes catatan yang menunggu untuk kamu selesaikan 🌿'
+              : 'Belum ada catatan hari ini, waktu yang pas untuk bersantai ☕️',
+          style: AppTextStyle.textSecondary.copyWith(fontSize: 16),
+        ),
+      ],
     );
   }
 }
