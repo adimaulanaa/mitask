@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
+import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/navigator_page.dart';
 
 class Onboarding extends StatefulWidget {
@@ -27,16 +28,37 @@ class _OnboardingState extends State<Onboarding> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.primary,
-      body: Center(
-        child: Image.asset(
-          MediaRes.omboarding, // Ganti dengan path gambar Anda
-          width: MediaQuery.of(context).size.width * 0.7,
-          height: MediaQuery.of(context).size.height * 0.2,
-          fit: BoxFit.contain,
-          color: AppColors.background,
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: size.height * 0.25,),
+          Center(
+            child: Image.asset(
+              MediaRes.omboarding, // Ganti dengan path gambar Anda
+              width: size.width * 0.7,
+              height: size.height * 0.2,
+              fit: BoxFit.contain,
+              color: AppColors.background,
+            ),
+          ),
+          SizedBox(height: size.height * 0.27,),
+          Center(
+            child: Text(
+              'App Mini Task For Everything task daily',
+              style: AppTextStyle.small.copyWith(fontWeight: semiBold, color: Colors.white),
+            ),
+          ),
+          Center(
+            child: Text(
+              'By Adi Maulana',
+              style: AppTextStyle.small.copyWith(fontWeight: semiBold, color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }

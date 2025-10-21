@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Josefin Sans', // Mengatur font default untuk aplikasi
+        fontFamily: 'Poppins', // Mengatur font default untuk aplikasi
       ),
       title: StringResources.nameApp,
       initialRoute: '/onboarding',

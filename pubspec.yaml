@@ -48,11 +48,17 @@ flutter:
     - assets/icons/
 
   fonts:
-    - family: Josefin Sans
+    - family: Poppins
       fonts:
-        - asset: assets/fonts/JosefinSans-Light.ttf
-        - asset: assets/fonts/JosefinSans-Regular.ttf
-        - asset: assets/fonts/JosefinSans-Medium.ttf
-        - asset: assets/fonts/JosefinSans-SemiBold.ttf
-        - asset: assets/fonts/JosefinSans-Bold.ttf
-        - asset: assets/fonts/JosefinSans-Thin.ttf
+        - asset: assets/fonts/Poppins-Thin.ttf
+          weight: 100 # Thin
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300 # Light
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400 # Regular (Default)
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500 # Medium
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600 # SemiBold
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700 # Bold

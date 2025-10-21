@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mitask/core/media/media_colors.dart';
 
 class AppTextStyle {
-  static const String _fontFamily = 'Josefin Sans';
+  static const String _fontFamily = 'Poppins';
 
   // Base Style
   static const TextStyle base = TextStyle(
