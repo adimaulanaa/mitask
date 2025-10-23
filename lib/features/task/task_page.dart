@@ -20,6 +20,7 @@ class _TaskPageState extends State<TaskPage> {
   final TextEditingController startDateCtr = TextEditingController();
   final TextEditingController endDateCtr = TextEditingController();
   bool isFilter = false;
+  bool isAll = true;
   bool isPin = false;
   bool isFav = false;
   bool isArch = false;
@@ -110,22 +111,28 @@ class _TaskPageState extends State<TaskPage> {
         SizedBox(height: 10),
         Row(
           children: [
+            BoxTypeAllFilter(
+              text: 'All',
+              active: isAll,
+              onTap: () => selectTpye(0),
+            ),
+            SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.pinned,
               active: isPin,
-              onTap: () => selectTpye(0),
+              onTap: () => selectTpye(1),
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.favorite,
               active: isFav,
-              onTap: () => selectTpye(1),
+              onTap: () => selectTpye(2),
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.archived,
               active: isArch,
-              onTap: () => selectTpye(2),
+              onTap: () => selectTpye(3),
             ),
           ],
         ),
@@ -133,6 +140,7 @@ class _TaskPageState extends State<TaskPage> {
         CustomInkWell(
           onTap: () {
             setState(() {
+              isAll = true;
               isPin = false;
               isFav = false;
               isArch = false;
@@ -143,8 +151,8 @@ class _TaskPageState extends State<TaskPage> {
           },
           child: SvgPicture.asset(
             MediaRes.filterRemove,
-            width: 23,
-            height: 23,
+            width: 20,
+            height: 20,
             colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           ),
         ),
@@ -154,11 +162,19 @@ class _TaskPageState extends State<TaskPage> {
 
   void selectTpye(int idx) {
     if (idx == 0) {
-      isPin = !isPin;
+      isAll = true;
+      isPin = false;
+      isFav = false;
+      isArch = false;
     } else if (idx == 1) {
-      isFav = !isFav;
+      isPin = !isPin;
+      isAll = false;
     } else if (idx == 2) {
+      isFav = !isFav;
+      isAll = false;
+    } else if (idx == 3) {
       isArch = !isArch;
+      isAll = false;
     }
     setState(() {});
   }
