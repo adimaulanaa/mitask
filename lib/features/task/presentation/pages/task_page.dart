@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
+import 'package:mitask/core/utils/custom_loading.dart';
+import 'package:mitask/core/utils/custom_popup.dart';
 import 'package:mitask/core/utils/custom_text_field.dart';
-import 'package:mitask/features/task/custom_floating.dart';
-import 'package:mitask/features/task/list_task.dart';
-import 'package:mitask/features/task/widget_task.dart';
+import 'package:mitask/features/task/domain/entities/task_entity.dart';
+import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
+import 'package:mitask/features/task/presentation/bloc/task_event.dart';
+import 'package:mitask/features/task/presentation/bloc/task_state.dart';
+import 'package:mitask/features/task/presentation/widgets/custom_floating.dart';
+import 'package:mitask/features/task/presentation/widgets/list_task.dart';
+import 'package:mitask/features/task/presentation/widgets/widget_task.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -16,9 +23,11 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  late TaskBloc _taskBloc;
   final TextEditingController searchCtr = TextEditingController();
   final TextEditingController startDateCtr = TextEditingController();
   final TextEditingController endDateCtr = TextEditingController();
+  List<TaskEntity> taskData = [];
   bool isFilter = false;
   bool isAll = true;
   bool isPin = false;
@@ -26,13 +35,43 @@ class _TaskPageState extends State<TaskPage> {
   bool isArch = false;
 
   @override
-  Widget build(BuildContext context) {
-  // Catatan: SizedBox(height: size.height * 0.08) tidak diperlukan lagi
+  void initState() {
+    super.initState();
+    _taskBloc = context.read<TaskBloc>();
+    _taskBloc.add(TaskRequested());
+  }
 
-  return Scaffold(
-    backgroundColor: AppColors.background,
-    appBar: null,
-    body: Padding(
+  @override
+  Widget build(BuildContext context) {
+    // Catatan: SizedBox(height: size.height * 0.08) 
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: null,
+      body: BlocListener<TaskBloc, TaskState>(
+        listener: (context, state) {
+          if (state is TaskLoading) {
+            LoadingScreen.show(context);
+          } else if (state is TaskLoaded) {
+            taskData.addAll(state.data);
+            LoadingScreen.hide(context);
+          } else if (state is TaskFailure) {
+            LoadingScreen.hide(context);
+            Popup.showError(context, title: 'Gagal', message: state.message);
+          }
+        },
+        child: _bodyForm(context),
+      ),
+      floatingActionButton: CustomExpandedFAB(
+        onPressed: () {
+          debugPrint('Tombol Add Task Kustom Ditekan');
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  Widget _bodyForm(BuildContext context) {
+    return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
       child: Column(
         children: [
@@ -46,28 +85,19 @@ class _TaskPageState extends State<TaskPage> {
               ],
             ),
           ),
-          Expanded( 
+          Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(
-                bottom: 70, 
-              ),
-              itemCount: 10, 
+              padding: const EdgeInsets.only(bottom: 70),
+              itemCount: 10,
               itemBuilder: (context, index) {
-                return const ListTask(); 
+                return const ListTask();
               },
             ),
           ),
         ],
       ),
-    ),
-    floatingActionButton: CustomExpandedFAB(
-      onPressed: () {
-        debugPrint('Tombol Add Task Kustom Ditekan');
-      },
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-  );
-}
+    );
+  }
 
   Widget _iconsFilter() {
     return Row(

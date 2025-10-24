@@ -5,7 +5,7 @@ class MediaRes {
   static const _baseIcon = 'assets/icons';
 
   // ! Core File
-  static const logo = '$_baseImage/logo.png';
+  static const logo = '$_baseImage/logo-basic.png';
   static const back = '$_baseIcon/arrow-left.svg';
   static const next = '$_baseIcon/arrow-right.svg';
   static const up = '$_baseIcon/arrow-up.svg';

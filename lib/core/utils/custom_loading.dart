@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/page_route.dart';
@@ -40,7 +41,7 @@ class LoadingPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(MediaRes.logo, width: 100, height: 100),
+            Image.asset(MediaRes.logo, width: 100, height: 100, color: AppColors.primary),
             const SizedBox(height: 10),
             // Text Dynamic
             Padding(
@@ -48,7 +49,7 @@ class LoadingPage extends StatelessWidget {
               child: Text(
                 displayText,
                 textAlign: TextAlign.center,
-                style: AppTextStyle.h3
+                style: AppTextStyle.h3.copyWith(color: AppColors.primary)
               ),
             ),
           ],

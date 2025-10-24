@@ -7,6 +7,12 @@ import 'package:mitask/features/dashboard/domain/repositories/dashboard_reposito
 import 'package:mitask/features/dashboard/domain/usecases/dashboard_usecase.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/features/services/database_service.dart';
+import 'package:mitask/features/task/data/datasources/task_local_datasource.dart';
+import 'package:mitask/features/task/data/datasources/task_remote_datasource.dart';
+import 'package:mitask/features/task/data/repositories/task_repository_impl.dart';
+import 'package:mitask/features/task/domain/repositories/task_repository.dart';
+import 'package:mitask/features/task/domain/usecases/task_usecase.dart';
+import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -43,4 +49,30 @@ Future<void> init() async {
 
   //! ---------------- Bloc ----------------
   sl.registerFactory(() => DashboardBloc(dash: sl<DashboardUseCase>()));
+
+  //! Task 
+  //! ---------------- Data Sources ----------------
+  sl.registerLazySingleton<TaskRemoteDataSource>(
+    () => TaskRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<TaskLocalDataSource>(
+    () => TaskLocalDataSourceImpl(storage: sl<StorageProvider>(), dbService: sl<DatabaseService>()),
+  );
+
+  //! ---------------- Repository ----------------
+  sl.registerLazySingleton<TaskRepository>(
+    () => TaskRepositoryImpl(
+      sl<TaskRemoteDataSource>(),
+      sl<TaskLocalDataSource>(),
+    ),
+  );
+
+  //! ---------------- Use Cases ----------------
+  sl.registerLazySingleton(
+    () => TaskUseCase(sl<TaskRepository>()),
+  );
+
+  //! ---------------- Bloc ----------------
+  sl.registerFactory(() => TaskBloc(task: sl<TaskUseCase>()));
 }
