@@ -11,6 +11,7 @@ import 'package:mitask/features/task/data/datasources/task_local_datasource.dart
 import 'package:mitask/features/task/data/datasources/task_remote_datasource.dart';
 import 'package:mitask/features/task/data/repositories/task_repository_impl.dart';
 import 'package:mitask/features/task/domain/repositories/task_repository.dart';
+import 'package:mitask/features/task/domain/usecases/create_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_usecase.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 
@@ -24,14 +25,17 @@ Future<void> init() async {
   final DatabaseService localDatabase = DatabaseService();
   sl.registerLazySingleton(() => localDatabase);
 
-  //! Dashboard 
+  //! Dashboard
   //! ---------------- Data Sources ----------------
   sl.registerLazySingleton<DashboardRemoteDataSource>(
     () => DashboardRemoteDataSourceImpl(),
   );
 
   sl.registerLazySingleton<DashboardLocalDataSource>(
-    () => DashboardLocalDataSourceImpl(storage: sl<StorageProvider>(), dbService: sl<DatabaseService>()),
+    () => DashboardLocalDataSourceImpl(
+      storage: sl<StorageProvider>(),
+      dbService: sl<DatabaseService>(),
+    ),
   );
 
   //! ---------------- Repository ----------------
@@ -43,21 +47,22 @@ Future<void> init() async {
   );
 
   //! ---------------- Use Cases ----------------
-  sl.registerLazySingleton(
-    () => DashboardUseCase(sl<DashboardRepository>()),
-  );
+  sl.registerLazySingleton(() => DashboardUseCase(sl<DashboardRepository>()));
 
   //! ---------------- Bloc ----------------
   sl.registerFactory(() => DashboardBloc(dash: sl<DashboardUseCase>()));
 
-  //! Task 
+  //! Task
   //! ---------------- Data Sources ----------------
   sl.registerLazySingleton<TaskRemoteDataSource>(
     () => TaskRemoteDataSourceImpl(),
   );
 
   sl.registerLazySingleton<TaskLocalDataSource>(
-    () => TaskLocalDataSourceImpl(storage: sl<StorageProvider>(), dbService: sl<DatabaseService>()),
+    () => TaskLocalDataSourceImpl(
+      storage: sl<StorageProvider>(),
+      dbService: sl<DatabaseService>(),
+    ),
   );
 
   //! ---------------- Repository ----------------
@@ -69,10 +74,11 @@ Future<void> init() async {
   );
 
   //! ---------------- Use Cases ----------------
-  sl.registerLazySingleton(
-    () => TaskUseCase(sl<TaskRepository>()),
-  );
+  sl.registerLazySingleton(() => TaskUseCase(sl<TaskRepository>()));
+  sl.registerLazySingleton(() => CreateTaskUseCase(sl<TaskRepository>()));
 
   //! ---------------- Bloc ----------------
-  sl.registerFactory(() => TaskBloc(task: sl<TaskUseCase>()));
+  sl.registerFactory(
+    () => TaskBloc(task: sl<TaskUseCase>(), create: sl<CreateTaskUseCase>()),
+  );
 }

@@ -42,6 +42,11 @@ class AppColors {
   // 🌫️ SHADOW & OVERLAY
   static const Color shadow = Color(0x1A000000); // 10% opacity black
   static const Color overlay = Color(0x33000000); // 20% opacity black
+
+  // Colors Tag
+  static const Color tagMint = Color(0xFFA5D6A7);
+  static const Color tagBlue = Color(0xFF81D4FA);
+  static const Color tagOrange = Color(0xFFFFAB91);
 }
 
 class AppDarkColors {

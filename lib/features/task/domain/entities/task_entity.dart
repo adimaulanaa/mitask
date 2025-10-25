@@ -16,7 +16,7 @@ class TaskEntity extends Equatable {
   final int? createdOn;
   final int? updatedOn;
   final int? deletedOn;
-  final String? colorTag;
+  final int? colorTag;
   final int isPinned;
   final int syncStatus;
 
@@ -43,23 +43,23 @@ class TaskEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        subtitle,
-        notes,
-        isStatus,
-        statusName,
-        isType,
-        isFavorite,
-        isArchived,
-        priority,
-        reminderOn,
-        dateOn,
-        createdOn,
-        updatedOn,
-        deletedOn,
-        colorTag,
-        isPinned,
-        syncStatus,
-      ];
+    id,
+    title,
+    subtitle,
+    notes,
+    isStatus,
+    statusName,
+    isType,
+    isFavorite,
+    isArchived,
+    priority,
+    reminderOn,
+    dateOn,
+    createdOn,
+    updatedOn,
+    deletedOn,
+    colorTag,
+    isPinned,
+    syncStatus,
+  ];
 }

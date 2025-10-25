@@ -8,6 +8,7 @@ import 'package:mitask/core/media/media_text.dart';
 class CustomTextField extends StatefulWidget {
   final String label;
   final bool isLabel;
+  final bool isRequired;
   final String hintText;
   final TextEditingController controller;
   final String? errorText;
@@ -28,6 +29,7 @@ class CustomTextField extends StatefulWidget {
     required this.controller,
     this.errorText,
     this.isLabel = true,
+    this.isRequired = false,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.color = AppColors.primary,
@@ -68,15 +70,27 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.isLabel
-            ? Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
+        if (widget.isLabel)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
                   widget.label,
                   style: AppTextStyle.body.copyWith(fontWeight: medium),
                 ),
-              )
-            : const SizedBox.shrink(),
+                if (widget.isRequired) // ➕ tampilkan bintang kalau wajib
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         const SizedBox(height: 6),
         TextFormField(
           controller: widget.controller,
@@ -93,6 +107,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 : null,
             suffixIcon: widget.suffixIcon,
             hintText: widget.hintText,
+            hintStyle: AppTextStyle.body.copyWith(
+              fontWeight: regular,
+              color: AppColors.disabledText,
+            ),
             errorText: widget.errorText,
             filled: true,
             fillColor: AppColors.background,
@@ -107,6 +125,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: widget.color, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.error),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.error, width: 2),
             ),
           ),
         ),
@@ -261,9 +287,8 @@ class _CustomDateInputState extends State<CustomDateInput> {
   Widget build(BuildContext context) {
     // Gunakan logika isNotEmpty untuk menentukan warna border (seperti pada SearchTextField Anda)
     final Color enabledColor = widget.controller.text.isEmpty
-        ? AppColors
-              .primary // Ganti dengan warna border default Anda
-        : widget.color.withValues(alpha: 0.7);
+        ? AppColors.border
+        : AppColors.primary.withValues(alpha: 0.7);
 
     return TextFormField(
       controller: widget.controller,
@@ -271,12 +296,12 @@ class _CustomDateInputState extends State<CustomDateInput> {
       // Memicu date picker saat input diklik
       onTap: () => _selectDate(context),
 
-      style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w500),
+      style: AppTextStyle.body.copyWith(fontWeight: medium),
 
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: AppTextStyle.textTertiary.copyWith(
-          fontWeight: FontWeight.normal,
+          fontWeight: regular,
           fontSize: 16,
         ),
 
@@ -313,6 +338,103 @@ class _CustomDateInputState extends State<CustomDateInput> {
           borderSide: BorderSide(color: widget.color, width: 2),
         ),
       ),
+    );
+  }
+}
+
+class CustomNoteField extends StatefulWidget {
+  final String label;
+  final bool isLabel;
+  final String hintText;
+  final TextEditingController controller;
+  final String? errorText;
+  final FocusNode? focusNode;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
+
+  const CustomNoteField({
+    super.key,
+    required this.label,
+    required this.hintText,
+    required this.controller,
+    this.errorText,
+    this.isLabel = true,
+    this.focusNode,
+    this.validator,
+    this.onChanged,
+  });
+
+  @override
+  State<CustomNoteField> createState() => _CustomNoteFieldState();
+}
+
+class _CustomNoteFieldState extends State<CustomNoteField> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_updateState);
+  }
+
+  void _updateState() => setState(() {});
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_updateState);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Color borderColor = widget.controller.text.isEmpty
+        ? AppColors.border
+        : AppColors.primary.withValues(alpha: 0.7);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.isLabel
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.label,
+                  style: AppTextStyle.body.copyWith(fontWeight: medium),
+                ),
+              )
+            : const SizedBox.shrink(),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          validator: widget.validator,
+          onChanged: widget.onChanged,
+          maxLines: null, // otomatis menyesuaikan isi
+          minLines: 4, // tinggi minimal
+          keyboardType: TextInputType.multiline,
+          style: AppTextStyle.body.copyWith(fontWeight: medium),
+          decoration: InputDecoration(
+            hintText: widget.hintText,
+            hintStyle: AppTextStyle.body.copyWith(
+              fontWeight: regular,
+              color: AppColors.disabledText,
+            ),
+            errorText: widget.errorText,
+            filled: true,
+            fillColor: AppColors.background,
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 12,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

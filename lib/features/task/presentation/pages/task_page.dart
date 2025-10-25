@@ -7,10 +7,12 @@ import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
 import 'package:mitask/core/utils/custom_text_field.dart';
+import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/task/domain/entities/task_entity.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
 import 'package:mitask/features/task/presentation/bloc/task_state.dart';
+import 'package:mitask/features/task/presentation/pages/create_task_page.dart';
 import 'package:mitask/features/task/presentation/widgets/custom_floating.dart';
 import 'package:mitask/features/task/presentation/widgets/list_task.dart';
 import 'package:mitask/features/task/presentation/widgets/widget_task.dart';
@@ -27,7 +29,7 @@ class _TaskPageState extends State<TaskPage> {
   final TextEditingController searchCtr = TextEditingController();
   final TextEditingController startDateCtr = TextEditingController();
   final TextEditingController endDateCtr = TextEditingController();
-  List<TaskEntity> taskData = [];
+  List<TaskEntity> _taskData = [];
   bool isFilter = false;
   bool isAll = true;
   bool isPin = false;
@@ -43,7 +45,7 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Catatan: SizedBox(height: size.height * 0.08) 
+    // Catatan: SizedBox(height: size.height * 0.08)
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: null,
@@ -52,25 +54,31 @@ class _TaskPageState extends State<TaskPage> {
           if (state is TaskLoading) {
             LoadingScreen.show(context);
           } else if (state is TaskLoaded) {
-            taskData.addAll(state.data);
             LoadingScreen.hide(context);
+            setState(() {
+              _taskData = state.data;
+            });
           } else if (state is TaskFailure) {
             LoadingScreen.hide(context);
             Popup.showError(context, title: 'Gagal', message: state.message);
           }
         },
-        child: _bodyForm(context),
+        child: _bodyForm(context, _taskData),
       ),
       floatingActionButton: CustomExpandedFAB(
-        onPressed: () {
-          debugPrint('Tombol Add Task Kustom Ditekan');
+        onPressed: () async {
+          await context.pushPage(
+            const CreateTaskPage(),
+            type: TransitionType.slide,
+          );
+          _taskBloc.add(TaskRequested());
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  Widget _bodyForm(BuildContext context) {
+  Widget _bodyForm(BuildContext context, List<TaskEntity> taskData) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
       child: Column(
@@ -86,13 +94,16 @@ class _TaskPageState extends State<TaskPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 70),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return const ListTask();
-              },
-            ),
+            child: taskData.isNotEmpty
+                ? ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 70),
+                    itemCount: taskData.length,
+                    itemBuilder: (context, index) {
+                      final task = taskData[index];
+                      return ListTask(data: task);
+                    },
+                  )
+                : ListIsEmpty(),
           ),
         ],
       ),

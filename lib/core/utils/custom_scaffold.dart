@@ -12,6 +12,7 @@ class CustomScaffold extends StatelessWidget {
   final bool showBackButton;
   final VoidCallback? onBackPressed;
   final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Color? backgroundColor;
   final List<Widget>? actions;
 
@@ -25,6 +26,7 @@ class CustomScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.backgroundColor,
     this.actions,
+    this.floatingActionButtonLocation,
   });
 
   @override
@@ -63,6 +65,7 @@ class CustomScaffold extends StatelessWidget {
             )
           : null,
       body: body,
+      floatingActionButtonLocation: floatingActionButtonLocation,
       floatingActionButton: floatingActionButton,
     );
   }

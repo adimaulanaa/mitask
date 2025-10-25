@@ -27,3 +27,21 @@ class TaskFailure extends TaskState {
   @override
   List<Object?> get props => [message];
 }
+
+class CreateLoading extends TaskState {}
+class CreateLoaded extends TaskState {
+  final String data;
+
+  const CreateLoaded({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class CreateFailure extends TaskState {
+  final String message;
+
+  const CreateFailure({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -16,25 +16,24 @@ class DatabaseService {
   static const String taskTable = 'ms_task';
 
   // Nama Kolom
-  static const String taskId = '_id';
-  static const String taskTitle = 'title';
-  static const String taskSubtitle = 'subtitle';
-  static const String taskNotes = 'notes';
-  static const String taskIsStatus = 'is_status';
-  static const String taskStatusName = 'status_name';
-  static const String taskIsType = 'is_type';
-  static const String taskIsFavorite = 'is_favorite';
-  static const String taskIsArchived = 'is_archived';
+  static const String taskId = 'id'; // Dulu '_id'
+  static const String taskTitle = 'title'; // Dulu 'taskTitle'
+  static const String taskSubtitle = 'subtitle'; // Dulu 'taskSubtitle'
+  static const String taskNotes = 'notes'; // Dulu 'taskNotes'
+  static const String taskIsStatus = 'isStatus';
+  static const String taskStatusName = 'statusName';
+  static const String taskIsType = 'type';
+  static const String taskIsFavorite = 'isFavorite';
+  static const String taskIsArchived = 'isArchived';
   static const String taskPriority = 'priority';
-  static const String taskReminderOn = 'reminder_on';
-  static const String taskDateOn = 'date_on';
-  static const String taskCreatedOn = 'created_on';
-  static const String taskUpdatedOn = 'updated_on';
-  static const String taskDeletedOn = 'deleted_on';
-  static const String taskColorTag = 'color_tag';
-  static const String taskIsPinned = 'is_pinned';
-  static const String taskSyncStatus =
-      'sync_status'; // 0 = belum sync, 1 = sudah sync
+  static const String taskReminderOn = 'reminderOn';
+  static const String taskDateOn = 'dateOn';
+  static const String taskCreatedOn = 'createdOn';
+  static const String taskUpdatedOn = 'updatedOn';
+  static const String taskDeletedOn = 'deletedOn';
+  static const String taskColorTag = 'colorTag';
+  static const String taskIsPinned = 'isPinned';
+  static const String taskSyncStatus = 'syncStatus';
 
   final uuid = const Uuid();
 
@@ -77,12 +76,12 @@ class DatabaseService {
         $taskIsFavorite INTEGER DEFAULT 0,
         $taskIsArchived INTEGER DEFAULT 0,
         $taskPriority INTEGER DEFAULT 0,
-        $taskReminderOn INTEGER,
-        $taskDateOn INTEGER,
-        $taskCreatedOn INTEGER,
-        $taskUpdatedOn INTEGER,
-        $taskDeletedOn INTEGER,
-        $taskColorTag TEXT,
+        $taskReminderOn INTEGER DEFAULT 0,
+        $taskDateOn INTEGER DEFAULT 0,
+        $taskCreatedOn INTEGER DEFAULT 0,
+        $taskUpdatedOn INTEGER DEFAULT 0,
+        $taskDeletedOn INTEGER DEFAULT 0,
+        $taskColorTag INTEGER DEFAULT 0,
         $taskIsPinned INTEGER DEFAULT 0,
         $taskSyncStatus INTEGER DEFAULT 0
       );

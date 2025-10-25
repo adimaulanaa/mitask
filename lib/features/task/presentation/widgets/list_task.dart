@@ -3,12 +3,18 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/date_utils.dart';
+import 'package:mitask/features/task/domain/entities/task_entity.dart';
 
 class ListTask extends StatelessWidget {
-  const ListTask({super.key});
+  final TaskEntity data;
+  const ListTask({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
+    final dateOn = timestampToDateString(data.dateOn);
+    final updateOn = timestampToTimeString(data.updatedOn);
+    bool status = data.isStatus == 1 ? true : false;
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),
@@ -24,7 +30,7 @@ class ListTask extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Title Task',
+                  data.title ?? '',
                   maxLines: 1, // Batasi 1 baris
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyle.body.copyWith(fontWeight: semiBold),
@@ -41,7 +47,7 @@ class ListTask extends StatelessWidget {
             ],
           ),
           Text(
-            'your detail task your detail',
+            data.subtitle ?? '',
             maxLines: 1, // Batasi 1 baris
             overflow: TextOverflow.ellipsis,
             style: AppTextStyle.caption.copyWith(fontWeight: regular),
@@ -62,7 +68,7 @@ class ListTask extends StatelessWidget {
                   ),
                   SizedBox(width: 5),
                   Text(
-                    '2025-01-01',
+                    dateOn,
                     style: AppTextStyle.textPrimary.copyWith(
                       fontWeight: regular,
                       fontSize: 13,
@@ -70,7 +76,7 @@ class ListTask extends StatelessWidget {
                   ),
                   SizedBox(width: 5),
                   Text(
-                    'Update: 13:00',
+                    'Update : $updateOn',
                     style: AppTextStyle.textPrimary.copyWith(
                       fontWeight: regular,
                       fontSize: 13,
@@ -82,17 +88,17 @@ class ListTask extends StatelessWidget {
                 height: 30,
                 width: 30,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: status ? AppColors.border : Colors.white,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.border,
+                    color: status ? AppColors.primary : AppColors.border,
                     width: 2.0, // Ketebalan border
                   ),
                 ),
                 child: Center(
                   child: Icon(
                     Icons.check,
-                    color: AppColors.disabledText,
+                    color: status ? AppColors.primary : AppColors.disabledText,
                     size: 20,
                   ),
                 ),

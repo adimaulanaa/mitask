@@ -23,50 +23,57 @@ class TaskModel extends TaskEntity {
   });
 
   /// Convert dari Map (data dari database)
-  factory TaskModel.fromMap(Map<String, dynamic> map) {
+  // TaskModel.dart
+
+factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-      id: map['_id'] as String,
+      id: map['id'] as String,
       title: map['title'] as String?,
       subtitle: map['subtitle'] as String?,
       notes: map['notes'] as String?,
-      isStatus: map['is_status'] ?? 0,
-      statusName: map['status_name'] as String?,
-      isType: map['is_type'] as String?,
-      isFavorite: map['is_favorite'] ?? 0,
-      isArchived: map['is_archived'] ?? 0,
-      priority: map['priority'] ?? 0,
-      reminderOn: map['reminder_on'],
-      dateOn: map['date_on'],
-      createdOn: map['created_on'],
-      updatedOn: map['updated_on'],
-      deletedOn: map['deleted_on'],
-      colorTag: map['color_tag'] as String?,
-      isPinned: map['is_pinned'] ?? 0,
-      syncStatus: map['sync_status'] ?? 0,
+      
+      isStatus: map['isStatus'] as int? ?? 0, // Menggunakan int?
+      statusName: map['statusName'] as String?,
+      isType: map['type'] as String?,
+      isFavorite: map['isFavorite'] as int? ?? 0, // Menggunakan int?
+      isArchived: map['isArchived'] as int? ?? 0, // Menggunakan int?
+      priority: map['priority'] as int? ?? 0, // Menggunakan int?
+      
+      // 💡 PERBAIKAN: Tangani nilai Timestamp (Int) yang mungkin null di DB
+      reminderOn: map['reminderOn'] as int?,
+      dateOn: map['dateOn'] as int?,
+      createdOn: map['createdOn'] as int?,
+      updatedOn: map['updatedOn'] as int?,
+      deletedOn: map['deletedOn'] as int?,
+      
+      // colorTag sudah kita perbaiki menjadi int
+      colorTag: map['colorTag'] as int? ?? 0, 
+      isPinned: map['isPinned'] as int? ?? 0,
+      syncStatus: map['syncStatus'] as int? ?? 0,
     );
-  }
+}
 
   /// Convert ke Map (untuk insert/update)
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
+      'id': id,
       'title': title,
       'subtitle': subtitle,
       'notes': notes,
-      'is_status': isStatus,
-      'status_name': statusName,
-      'is_type': isType,
-      'is_favorite': isFavorite,
-      'is_archived': isArchived,
+      'isStatus': isStatus,
+      'statusName': statusName,
+      'type': isType,
+      'isFavorite': isFavorite,
+      'isArchived': isArchived,
       'priority': priority,
-      'reminder_on': reminderOn,
-      'date_on': dateOn,
-      'created_on': createdOn,
-      'updated_on': updatedOn,
-      'deleted_on': deletedOn,
-      'color_tag': colorTag,
-      'is_pinned': isPinned,
-      'sync_status': syncStatus,
+      'reminderOn': reminderOn,
+      'dateOn': dateOn,
+      'createdOn': createdOn,
+      'updatedOn': updatedOn,
+      'deletedOn': deletedOn,
+      'colorTag': colorTag,
+      'isPinned': isPinned,
+      'syncStatus': syncStatus,
     };
   }
 }
