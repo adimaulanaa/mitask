@@ -75,3 +75,14 @@ String timestampToTimeString(int? timestamp) {
     return 'Invalid Time';
   }
 }
+
+DateTime? parseDate(String dateString) {
+  if (dateString.trim().isEmpty) return null;
+  try {
+    // Format harus sesuai dengan output dari CustomDateInput Anda
+    final DateFormat formatter = DateFormat('dd MMM yyyy'); 
+    return formatter.parse(dateString.trim());
+  } catch (e) {
+    return null;
+  }
+}

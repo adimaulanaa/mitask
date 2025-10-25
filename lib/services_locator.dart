@@ -12,6 +12,7 @@ import 'package:mitask/features/task/data/datasources/task_remote_datasource.dar
 import 'package:mitask/features/task/data/repositories/task_repository_impl.dart';
 import 'package:mitask/features/task/domain/repositories/task_repository.dart';
 import 'package:mitask/features/task/domain/usecases/create_task_usecase.dart';
+import 'package:mitask/features/task/domain/usecases/task_filter_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_usecase.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 
@@ -76,9 +77,14 @@ Future<void> init() async {
   //! ---------------- Use Cases ----------------
   sl.registerLazySingleton(() => TaskUseCase(sl<TaskRepository>()));
   sl.registerLazySingleton(() => CreateTaskUseCase(sl<TaskRepository>()));
+  sl.registerLazySingleton(() => TaskFilterUseCase(sl<TaskRepository>()));
 
   //! ---------------- Bloc ----------------
   sl.registerFactory(
-    () => TaskBloc(task: sl<TaskUseCase>(), create: sl<CreateTaskUseCase>()),
+    () => TaskBloc(
+      task: sl<TaskUseCase>(),
+      create: sl<CreateTaskUseCase>(),
+      filter: sl<TaskFilterUseCase>(),
+    ),
   );
 }

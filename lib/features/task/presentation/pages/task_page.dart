@@ -7,8 +7,10 @@ import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
 import 'package:mitask/core/utils/custom_text_field.dart';
+import 'package:mitask/core/utils/date_utils.dart';
 import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/task/domain/entities/task_entity.dart';
+import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
 import 'package:mitask/features/task/presentation/bloc/task_state.dart';
@@ -30,6 +32,7 @@ class _TaskPageState extends State<TaskPage> {
   final TextEditingController startDateCtr = TextEditingController();
   final TextEditingController endDateCtr = TextEditingController();
   List<TaskEntity> _taskData = [];
+  List<TaskEntity> _filterTaskData = [];
   bool isFilter = false;
   bool isAll = true;
   bool isPin = false;
@@ -51,14 +54,24 @@ class _TaskPageState extends State<TaskPage> {
       appBar: null,
       body: BlocListener<TaskBloc, TaskState>(
         listener: (context, state) {
-          if (state is TaskLoading) {
+          if (state is TaskLoading || state is FilterLoading) {
             LoadingScreen.show(context);
           } else if (state is TaskLoaded) {
             LoadingScreen.hide(context);
             setState(() {
               _taskData = state.data;
+              _filterTaskData = _taskData;
+            });
+          } else if (state is FilterLoaded) {
+            LoadingScreen.hide(context);
+            setState(() {
+              _taskData = state.data;
+              _filterTaskData = _taskData;
             });
           } else if (state is TaskFailure) {
+            LoadingScreen.hide(context);
+            Popup.showError(context, title: 'Gagal', message: state.message);
+          } else if (state is FilterFailure) {
             LoadingScreen.hide(context);
             Popup.showError(context, title: 'Gagal', message: state.message);
           }
@@ -86,7 +99,13 @@ class _TaskPageState extends State<TaskPage> {
           SafeArea(
             child: Column(
               children: [
-                SearchTextField(hintText: 'Cari Task..', controller: searchCtr),
+                SearchTextField(
+                  hintText: 'Cari Task..',
+                  controller: searchCtr,
+                  onChanged: (value) {
+                    filterData();
+                  },
+                ),
                 const SizedBox(height: 10),
                 isFilter ? _advFilter() : _iconsFilter(),
                 const SizedBox(height: 10),
@@ -94,12 +113,12 @@ class _TaskPageState extends State<TaskPage> {
             ),
           ),
           Expanded(
-            child: taskData.isNotEmpty
+            child: _filterTaskData.isNotEmpty
                 ? ListView.builder(
                     padding: const EdgeInsets.only(bottom: 70),
-                    itemCount: taskData.length,
+                    itemCount: _filterTaskData.length,
                     itemBuilder: (context, index) {
-                      final task = taskData[index];
+                      final task = _filterTaskData[index];
                       return ListTask(data: task);
                     },
                   )
@@ -108,6 +127,18 @@ class _TaskPageState extends State<TaskPage> {
         ],
       ),
     );
+  }
+
+  void filterData() {
+    TaskFilterParams currentParams = TaskFilterParams(
+      query: searchCtr.text.trim(),
+      isPin: isPin,
+      isFav: isFav,
+      isArch: isArch,
+      startDate: parseDate(startDateCtr.text),
+      endDate: parseDate(endDateCtr.text),
+    );
+    _taskBloc.add(FilterRequested(data: currentParams));
   }
 
   Widget _iconsFilter() {
@@ -141,11 +172,20 @@ class _TaskPageState extends State<TaskPage> {
               child: CustomDateInput(
                 controller: startDateCtr,
                 hintText: 'Awal',
+                onTap: () {
+                  filterData();
+                },
               ),
             ),
             SizedBox(width: 10),
             Expanded(
-              child: CustomDateInput(controller: endDateCtr, hintText: 'Akhir'),
+              child: CustomDateInput(
+                controller: endDateCtr,
+                hintText: 'Akhir',
+                onTap: () {
+                  filterData();
+                },
+              ),
             ),
           ],
         ),
@@ -155,25 +195,37 @@ class _TaskPageState extends State<TaskPage> {
             BoxTypeAllFilter(
               text: 'All',
               active: isAll,
-              onTap: () => selectTpye(0),
+              onTap: () {
+                selectTpye(0);
+                filterData();
+              },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.pinned,
               active: isPin,
-              onTap: () => selectTpye(1),
+              onTap: () {
+                selectTpye(1);
+                filterData();
+              },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.favorite,
               active: isFav,
-              onTap: () => selectTpye(2),
+              onTap: () {
+                selectTpye(2);
+                filterData();
+              },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.archived,
               active: isArch,
-              onTap: () => selectTpye(3),
+              onTap: () {
+                selectTpye(3);
+                filterData();
+              },
             ),
           ],
         ),

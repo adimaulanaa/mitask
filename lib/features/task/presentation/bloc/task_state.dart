@@ -45,3 +45,21 @@ class CreateFailure extends TaskState {
   @override
   List<Object?> get props => [message];
 }
+
+class FilterLoading extends TaskState {}
+class FilterLoaded extends TaskState {
+  final List<TaskEntity> data;
+
+  const FilterLoaded({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class FilterFailure extends TaskState {
+  final String message;
+
+  const FilterFailure({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

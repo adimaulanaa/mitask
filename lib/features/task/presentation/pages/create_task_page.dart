@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/botton.dart';
@@ -31,6 +32,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   final TextEditingController dateCtr = TextEditingController();
   final TextEditingController reminderDateCtr = TextEditingController();
   String? errorTitle;
+  String? errorReminderDate;
   int priority = 0;
   int tagColors = 0;
   bool isPinned = false;
@@ -40,6 +42,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   void initState() {
     super.initState();
     _taskBloc = context.read<TaskBloc>();
+    setInit();
   }
 
   @override
@@ -120,6 +123,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           CustomDateInput(
             controller: dateCtr,
             hintText: 'Pilih tanggal dan waktu',
+            onTap: () {},
           ),
           SizedBox(height: 10),
           Text(
@@ -130,6 +134,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           CustomDateInput(
             controller: reminderDateCtr,
             hintText: 'Pilih tanggal pengingat',
+            errorText: errorReminderDate,
+            onTap: () {},
           ),
           SizedBox(height: 10),
           PrioritySelector(
@@ -169,14 +175,36 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     );
   }
 
+  void setInit() {
+    DateTime now = DateTime.now();
+    final String formattedDate = DateFormat('dd MMM yyyy').format(now);
+    dateCtr.text = formattedDate;
+    setState(() {});
+  }
+
   bool validateForm() {
     errorTitle = null;
+    errorReminderDate = null;
     final title = titleCtr.text.trim();
+    // --- 1. Validasi Title ---
     if (title.isEmpty) {
       errorTitle = 'Title task wajib diisi';
     }
+
+    // --- 2. Validasi Reminder vs Date ---
+    final date = parseDate(dateCtr.text);
+    final reminderDate = parseDate(reminderDateCtr.text);
+
+    if (date != null && reminderDate != null) {
+      // Cek apakah tanggal reminder (reminderDate) LEBIH AWAL dari tanggal utama (date)
+      // .isBefore akan mengembalikan true jika reminderDate < date.
+      if (reminderDate.isBefore(date)) {
+        errorReminderDate = 'Pengingat harus setelah tanggal tugas.';
+      }
+    }
+
     setState(() {});
-    if (errorTitle != null) {
+    if (errorTitle != null || errorReminderDate != null) {
       return false;
     }
     return true;
@@ -190,10 +218,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       title: titleCtr.text.trim(),
       subtitle: subtitleCtr.text.trim(),
       notes: notesCtr.text.trim(),
-      // isStatus: 0,
-      // statusName: null,
-      // type: null,
-      // isArchived: 0,
       isFavorite: isFavorite ? 1 : 0,
       isPinned: isPinned ? 1 : 0,
       priority: priority,
@@ -202,9 +226,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       createdOn: createdOn,
       updatedOn: createdOn,
       colorTag: tagColors,
-      // updatedOn: null,
-      // deletedOn: null,
-      // syncStatus: 0,
     );
     _taskBloc.add(CreateRequested(data: params));
   }
