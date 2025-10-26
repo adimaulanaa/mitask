@@ -99,3 +99,21 @@ class DeleteFailure extends TaskState {
   @override
   List<Object?> get props => [message];
 }
+
+class ChecklistLoading extends TaskState {}
+class ChecklistLoaded extends TaskState {
+  final String data;
+
+  const ChecklistLoaded({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class ChecklistFailure extends TaskState {
+  final String message;
+
+  const ChecklistFailure({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

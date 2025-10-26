@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mitask/features/task/domain/usecases/params/checklist_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/create_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/update_task_params.dart';
@@ -42,4 +43,12 @@ class DeleteRequested extends TaskEvent {
 
   @override
   List<Object> get props => [id];
+}
+
+class ChecklistRequested extends TaskEvent {
+  final ChecklistTaskParams data;
+  const ChecklistRequested({required this.data});
+
+  @override
+  List<Object> get props => [data];
 }

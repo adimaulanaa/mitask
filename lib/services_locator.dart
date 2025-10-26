@@ -11,6 +11,7 @@ import 'package:mitask/features/task/data/datasources/task_local_datasource.dart
 import 'package:mitask/features/task/data/datasources/task_remote_datasource.dart';
 import 'package:mitask/features/task/data/repositories/task_repository_impl.dart';
 import 'package:mitask/features/task/domain/repositories/task_repository.dart';
+import 'package:mitask/features/task/domain/usecases/checklist_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/create_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/delete_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_filter_usecase.dart';
@@ -82,6 +83,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TaskFilterUseCase(sl<TaskRepository>()));
   sl.registerLazySingleton(() => UpdateTaskUseCase(sl<TaskRepository>()));
   sl.registerLazySingleton(() => DeleteTaskUseCase(sl<TaskRepository>()));
+  sl.registerLazySingleton(() => ChecklistTaskUseCase(sl<TaskRepository>()));
 
   //! ---------------- Bloc ----------------
   sl.registerFactory(
@@ -91,6 +93,7 @@ Future<void> init() async {
       filter: sl<TaskFilterUseCase>(),
       update: sl<UpdateTaskUseCase>(),
       delete: sl<DeleteTaskUseCase>(),
+      checklist: sl<ChecklistTaskUseCase>(),
     ),
   );
 }

@@ -62,4 +62,46 @@ class TaskEntity extends Equatable {
     isPinned,
     syncStatus,
   ];
+
+  TaskEntity copyWith({
+    String? id,
+    String? title,
+    String? subtitle,
+    String? notes,
+    int? isStatus,
+    String? statusName,
+    String? isType,
+    int? isFavorite,
+    int? isArchived,
+    int? priority,
+    int? reminderOn,
+    int? dateOn,
+    int? createdOn,
+    int? updatedOn,
+    int? deletedOn,
+    int? colorTag,
+    int? isPinned,
+    int? syncStatus,
+  }) {
+    return TaskEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      notes: notes ?? this.notes,
+      isStatus: isStatus ?? this.isStatus,
+      statusName: statusName ?? this.statusName,
+      isType: isType ?? this.isType,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isArchived: isArchived ?? this.isArchived,
+      priority: priority ?? this.priority,
+      reminderOn: reminderOn ?? this.reminderOn,
+      dateOn: dateOn ?? this.dateOn,
+      createdOn: createdOn ?? this.createdOn,
+      updatedOn: updatedOn ?? this.updatedOn,
+      deletedOn: deletedOn ?? this.deletedOn,
+      colorTag: colorTag ?? this.colorTag,
+      isPinned: isPinned ?? this.isPinned,
+      syncStatus: syncStatus ?? this.syncStatus,
+    );
+  }
 }

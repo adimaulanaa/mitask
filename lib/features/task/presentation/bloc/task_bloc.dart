@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mitask/features/task/domain/usecases/checklist_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/create_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/delete_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_filter_usecase.dart';
@@ -13,6 +14,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final TaskFilterUseCase filter;
   final UpdateTaskUseCase update;
   final DeleteTaskUseCase delete;
+  final ChecklistTaskUseCase checklist;
 
   TaskBloc({
     required this.task,
@@ -20,12 +22,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     required this.filter,
     required this.update,
     required this.delete,
+    required this.checklist,
   }) : super(TaskInitial()) {
     on<TaskRequested>(_onTaskRequested);
     on<CreateRequested>(_onCreateRequested);
     on<FilterRequested>(_onFilterRequested);
     on<UpdateRequested>(_onUpdateRequested);
     on<DeleteRequested>(_onDeleteRequested);
+    on<ChecklistRequested>(_onChecklistRequested);
   }
 
   Future<void> _onTaskRequested(
@@ -95,6 +99,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     result.fold(
       (failure) => emit(DeleteFailure(message: failure.message)),
       (success) => emit(DeleteLoaded(data: success)),
+    );
+  }
+
+  Future<void> _onChecklistRequested(
+    ChecklistRequested event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(ChecklistLoading());
+
+    final result = await checklist(event.data);
+
+    result.fold(
+      (failure) => emit(ChecklistFailure(message: failure.message)),
+      (success) => emit(ChecklistLoaded(data: success)),
     );
   }
 }

@@ -135,6 +135,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
       child: ListView(
         children: [
+          UIButton(
+            type: UIButtonType.outlined,
+            size: UIButtonSize.medium,
+            child: Text(
+              widget.data.statusName ?? '',
+              style: AppTextStyle.primary.copyWith(fontWeight: semiBold),
+            ),
+          ),
+          SizedBox(height: 15),
           CustomTextField(
             label: 'Title',
             isRequired: true,

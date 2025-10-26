@@ -159,6 +159,20 @@ class DatabaseService {
     return await db.delete(taskTable, where: '$taskId = ?', whereArgs: [id]);
   }
 
+  Future<int> checklistTask(String id, String status, int isStatus) async {
+    final db = await database;
+    return await db.update(
+      taskTable,
+      {
+        taskUpdatedOn: DateTime.now().millisecondsSinceEpoch,
+        taskIsStatus: isStatus,
+        taskStatusName: status,
+      },
+      where: '$taskId = ?',
+      whereArgs: [id],
+    );
+  }
+
   // Helper: Toggle Pin/Favorite/Archive
   Future<void> toggleFavorite(String id, bool isFavorite) async {
     final db = await database;

@@ -10,13 +10,21 @@ import 'package:mitask/features/task/domain/entities/task_entity.dart';
 class ListTask extends StatelessWidget {
   final TaskEntity data;
   final Function onTap;
-  const ListTask({super.key, required this.data, required this.onTap});
+  final Function onTapCheck;
+  const ListTask({
+    super.key,
+    required this.data,
+    required this.onTap,
+    required this.onTapCheck,
+  });
 
   @override
   Widget build(BuildContext context) {
     final dateOn = timestampToDateString(data.dateOn);
     final updateOn = timestampToTimeString(data.updatedOn);
     bool status = data.isStatus == 1 ? true : false;
+    bool isPin = data.isPinned == 1 ? true : false;
+    bool isFav = data.isFavorite == 1 ? true : false;
     return CustomInkWell(
       onTap: () => onTap(),
       child: Container(
@@ -40,14 +48,24 @@ class ListTask extends StatelessWidget {
                     style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                   ),
                 ),
-                SvgPicture.asset(
-                  MediaRes.pinned,
-                  width: 18,
-                  colorFilter: ColorFilter.mode(
-                    AppColors.primaryDark,
-                    BlendMode.srcIn,
+                if (isPin)
+                  SvgPicture.asset(
+                    MediaRes.pinned,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.primaryDark,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
+                if (isFav)
+                  SvgPicture.asset(
+                    MediaRes.favorite,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.primaryDark,
+                      BlendMode.srcIn,
+                    ),
+                  ),
               ],
             ),
             Text(
@@ -88,24 +106,27 @@ class ListTask extends StatelessWidget {
                     ),
                   ],
                 ),
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    color: status ? AppColors.border : Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: status ? AppColors.primary : AppColors.border,
-                      width: 2.0, // Ketebalan border
+                CustomInkWell(
+                  onTap: () => onTapCheck(),
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: status ? AppColors.border : Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: status ? AppColors.primary : AppColors.border,
+                        width: 2.0, // Ketebalan border
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.check,
-                      color: status
-                          ? AppColors.primary
-                          : AppColors.disabledText,
-                      size: 20,
+                    child: Center(
+                      child: Icon(
+                        Icons.check,
+                        color: status
+                            ? AppColors.primary
+                            : AppColors.disabledText,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),

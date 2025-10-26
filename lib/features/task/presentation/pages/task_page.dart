@@ -11,6 +11,7 @@ import 'package:mitask/core/utils/custom_text_field.dart';
 import 'package:mitask/core/utils/date_utils.dart';
 import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/task/domain/entities/task_entity.dart';
+import 'package:mitask/features/task/domain/usecases/params/checklist_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
@@ -56,7 +57,9 @@ class _TaskPageState extends State<TaskPage> {
       appBar: null,
       body: BlocListener<TaskBloc, TaskState>(
         listener: (context, state) {
-          if (state is TaskLoading || state is FilterLoading) {
+          if (state is TaskLoading ||
+              state is FilterLoading ||
+              state is ChecklistLoading) {
             LoadingScreen.show(context);
           } else if (state is TaskLoaded) {
             LoadingScreen.hide(context);
@@ -70,10 +73,16 @@ class _TaskPageState extends State<TaskPage> {
               _taskData = state.data;
               _filterTaskData = _taskData;
             });
+          } else if (state is ChecklistLoaded) {
+            LoadingScreen.hide(context);
+            filterData();
           } else if (state is TaskFailure) {
             LoadingScreen.hide(context);
             Popup.showError(context, title: 'Gagal', message: state.message);
           } else if (state is FilterFailure) {
+            LoadingScreen.hide(context);
+            Popup.showError(context, title: 'Gagal', message: state.message);
+          } else if (state is ChecklistFailure) {
             LoadingScreen.hide(context);
             Popup.showError(context, title: 'Gagal', message: state.message);
           }
@@ -129,6 +138,22 @@ class _TaskPageState extends State<TaskPage> {
                             type: TransitionType.slide,
                           );
                           _taskBloc.add(TaskRequested());
+                        },
+                        onTapCheck: () {
+                          final isStatus = task.isStatus == 0 ? 1 : 0;
+                          String statusName;
+                          if (isStatus == 1) {
+                            statusName = 'Complated';
+                          } else {
+                            statusName = 'Hold Progress';
+                          }
+                          ChecklistTaskParams data = ChecklistTaskParams(
+                            id: task.id,
+                            isStatus: isStatus,
+                            statusName: statusName,
+                            type: task.isType,
+                          );
+                          _taskBloc.add(ChecklistRequested(data: data));
                         },
                       );
                     },

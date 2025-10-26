@@ -2,6 +2,7 @@ import 'package:mitask/core/network/exceptions.dart';
 import 'package:mitask/core/storage/storage_provider.dart';
 import 'package:mitask/features/services/database_service.dart';
 import 'package:mitask/features/task/data/models/task_model.dart';
+import 'package:mitask/features/task/domain/usecases/params/checklist_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/create_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/update_task_params.dart';
@@ -12,6 +13,7 @@ abstract class TaskLocalDataSource {
   Future<String> create(CreateTaskParams params);
   Future<String> update(UpdateTaskParams params);
   Future<String> delete(String id);
+  Future<String> checklist(ChecklistTaskParams params);
   Future<List<TaskModel>> filter(TaskFilterParams params);
 }
 
@@ -220,5 +222,27 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
 
     // Karena ini soft delete (update kolom deletedOn), kita anggap berhasil
     return 'Tugas berhasil dihapus.';
+  }
+
+  @override
+  Future<String> checklist(ChecklistTaskParams params) async {
+    // 1. Validasi ID
+    if (params.id.isEmpty) {
+      throw NotFoundException(message: 'ID tugas tidak valid.');
+    }
+    final int count = await dbService.checklistTask(
+      params.id,
+      params.statusName,
+      params.isStatus,
+    );
+
+    if (count == 0) {
+      throw BadRequestException(
+        message:
+            'Gagal Checklist data: Tugas dengan ID ${params.id} tidak ditemukan.',
+      );
+    }
+
+    return 'Tugas berhasil di checklist.';
   }
 }
