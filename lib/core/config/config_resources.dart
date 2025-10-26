@@ -16,6 +16,10 @@ class StringResources {
   static const String nameApp = "MiTask"; 
   static const String loading = "Loading ..."; 
 
+  // Status
+  static const String statusNotStarted = "Not Started"; 
+  static const String statusHoldProgres = "Hold Progress"; 
+  static const String statusComplated = "Complated"; 
 
   //! Dashboard 
   static const String title = "Title..."; 

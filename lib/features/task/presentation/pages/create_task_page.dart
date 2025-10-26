@@ -37,6 +37,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   int tagColors = 0;
   bool isPinned = false;
   bool isFavorite = false;
+  bool isArchived = false;
 
   @override
   void initState() {
@@ -161,6 +162,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
             onTap: () => setState(() => isFavorite = !isFavorite),
           ),
           SizedBox(height: 10),
+          CustomOneSelector(
+            title: 'Archived',
+            hint: 'Mark as archived',
+            isSelected: isArchived,
+            onTap: () => setState(() => isArchived = !isArchived),
+          ),
+          SizedBox(height: 10),
           TagColorsSelector(
             selectedValue: tagColors,
             onChanged: (val) {
@@ -220,6 +228,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       notes: notesCtr.text.trim(),
       isFavorite: isFavorite ? 1 : 0,
       isPinned: isPinned ? 1 : 0,
+      isArchived: isArchived ? 1 : 0,
       priority: priority,
       reminderOn: reminderAndDateOn,
       dateOn: dateOn,

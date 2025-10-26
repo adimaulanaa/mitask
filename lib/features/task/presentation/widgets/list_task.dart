@@ -25,6 +25,7 @@ class ListTask extends StatelessWidget {
     bool status = data.isStatus == 1 ? true : false;
     bool isPin = data.isPinned == 1 ? true : false;
     bool isFav = data.isFavorite == 1 ? true : false;
+    bool isArch = data.isArchived == 1 ? true : false;
     return CustomInkWell(
       onTap: () => onTap(),
       child: Container(
@@ -60,6 +61,15 @@ class ListTask extends StatelessWidget {
                 if (isFav)
                   SvgPicture.asset(
                     MediaRes.favorite,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.primaryDark,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                if (isArch)
+                  SvgPicture.asset(
+                    MediaRes.archived,
                     width: 18,
                     colorFilter: ColorFilter.mode(
                       AppColors.primaryDark,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
@@ -143,9 +144,9 @@ class _TaskPageState extends State<TaskPage> {
                           final isStatus = task.isStatus == 0 ? 1 : 0;
                           String statusName;
                           if (isStatus == 1) {
-                            statusName = 'Complated';
+                            statusName = StringResources.statusComplated;
                           } else {
-                            statusName = 'Hold Progress';
+                            statusName = StringResources.statusHoldProgres;
                           }
                           ChecklistTaskParams data = ChecklistTaskParams(
                             id: task.id,
@@ -332,6 +333,9 @@ class _TaskPageState extends State<TaskPage> {
     } else if (idx == 3) {
       isArch = !isArch;
       isAll = false;
+    }
+    if (!isPin && !isFav && !isArch) {
+      isAll = true;
     }
     setState(() {});
   }

@@ -1,3 +1,5 @@
+import 'package:mitask/core/config/config_resources.dart';
+
 class CreateTaskParams {
   final String id;
   final String title;
@@ -24,7 +26,7 @@ class CreateTaskParams {
     this.subtitle,
     this.notes,
     this.isStatus = 0,
-    this.statusName = 'Not Started',
+    this.statusName = StringResources.statusNotStarted,
     this.type,
     this.isFavorite = 0,
     this.isArchived = 0,

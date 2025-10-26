@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
@@ -43,6 +44,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   bool isPinned = false;
   bool isFavorite = false;
   bool isSaved = false;
+  String statusName = '-';
+  Color colors = AppColors.primary;
 
   @override
   void initState() {
@@ -138,9 +141,13 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
           UIButton(
             type: UIButtonType.outlined,
             size: UIButtonSize.medium,
+            color: colors,
             child: Text(
-              widget.data.statusName ?? '',
-              style: AppTextStyle.primary.copyWith(fontWeight: semiBold),
+              statusName,
+              style: AppTextStyle.body.copyWith(
+                fontWeight: semiBold,
+                color: colors,
+              ),
             ),
           ),
           SizedBox(height: 15),
@@ -254,6 +261,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     isPinned = _task?.isPinned == 1 ? true : false;
     isFavorite = _task?.isFavorite == 1 ? true : false;
     tagColors = _task?.colorTag ?? 0;
+
+    // status
+    statusName = _task?.statusName ?? '-';
+    if (_task?.statusName == StringResources.statusHoldProgres) {
+      colors = AppColors.warning;
+    } else if (_task?.statusName == StringResources.statusComplated) {
+      colors = AppColors.primary;
+    } else {
+      colors = AppColors.disabledText;
+    }
     setState(() {});
   }
 

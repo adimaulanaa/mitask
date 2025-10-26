@@ -1,3 +1,5 @@
+import 'package:mitask/core/config/config_resources.dart';
+
 class ChecklistTaskParams {
   final String id;
   final int isStatus;
@@ -7,7 +9,7 @@ class ChecklistTaskParams {
   const ChecklistTaskParams({
     this.id = '',
     this.isStatus = 0,
-    this.statusName = 'Not Started',
+    this.statusName = StringResources.statusNotStarted,
     this.type = '',
   });
 
