@@ -1,13 +1,17 @@
+import 'package:mitask/core/network/exceptions.dart';
 import 'package:mitask/core/storage/storage_provider.dart';
 import 'package:mitask/features/services/database_service.dart';
 import 'package:mitask/features/task/data/models/task_model.dart';
 import 'package:mitask/features/task/domain/usecases/params/create_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
+import 'package:mitask/features/task/domain/usecases/params/update_task_params.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class TaskLocalDataSource {
   Future<List<TaskModel>> get();
   Future<String> create(CreateTaskParams params);
+  Future<String> update(UpdateTaskParams params);
+  Future<String> delete(String id);
   Future<List<TaskModel>> filter(TaskFilterParams params);
 }
 
@@ -156,5 +160,65 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
 
     // 6. Kembalikan hasil akhir
     return finalResult;
+  }
+
+  @override
+  Future<String> update(UpdateTaskParams params) async {
+    // 1. Dapatkan data yang akan diupdate dari params
+    // Asumsi: params.toMap() mengembalikan Map dengan KEY kolom database, termasuk 'id'.
+    final data = params.toMap();
+
+    // 2. Ambil ID yang diperlukan dan hapus dari data yang akan di-update
+    final String? taskId = data['id'] as String?;
+
+    if (taskId == null || taskId.isEmpty) {
+      throw BadRequestException(
+        message: 'ID tugas wajib disertakan untuk proses update.',
+      );
+    }
+
+    // Hapus ID dari Map agar tidak di-update sebagai kolom biasa.
+    // Fungsi updateTask di service Anda hanya menggunakan 'data' untuk SET values.
+    data.remove('id');
+
+    // Hapus null values
+    data.removeWhere((key, value) => value == null);
+
+    // 3. Panggil method update dari service
+    final int count = await dbService.updateTask(
+      taskId, // ID digunakan di klausa WHERE
+      data, // Map data yang akan di-SET
+    );
+
+    // 4. Cek hasil dan kembalikan pesan
+    if (count == 0) {
+      throw BadRequestException(
+        message:
+            'Gagal memperbarui data: Tugas dengan ID $taskId tidak ditemukan.',
+      );
+    }
+
+    return 'Data berhasil diperbarui';
+  }
+
+  @override
+  Future<String> delete(String id) async {
+    // 1. Validasi ID
+    if (id.isEmpty) {
+      throw NotFoundException(message: 'ID tugas tidak valid.');
+    }
+
+    // 2. Panggil method soft delete dari service
+    final int count = await dbService.deleteTask(id);
+
+    // 3. Cek hasil dan kembalikan pesan
+    if (count == 0) {
+      throw BadRequestException(
+        message: 'Gagal menghapus data: Tugas dengan ID $id tidak ditemukan.',
+      );
+    }
+
+    // Karena ini soft delete (update kolom deletedOn), kita anggap berhasil
+    return 'Tugas berhasil dihapus.';
   }
 }

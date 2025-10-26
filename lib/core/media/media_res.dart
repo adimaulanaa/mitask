@@ -10,6 +10,7 @@ class MediaRes {
   static const next = '$_baseIcon/arrow-right.svg';
   static const up = '$_baseIcon/arrow-up.svg';
   static const down = '$_baseIcon/arrow-down.svg';
+  static const trash = '$_baseIcon/trush-square.svg';
   static const dashboard = '$_baseIcon/dashboard.svg';
   static const task = '$_baseIcon/task.svg';
   static const report = '$_baseIcon/report.svg';
@@ -28,5 +29,4 @@ class MediaRes {
   static const search = '$_baseIcon/search.svg';
   static const filter = '$_baseIcon/filter-add.svg';
   static const filterRemove = '$_baseIcon/filter-remove.svg';
-  
 }

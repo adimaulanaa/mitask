@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mitask/features/task/domain/usecases/create_task_usecase.dart';
+import 'package:mitask/features/task/domain/usecases/delete_task_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_filter_usecase.dart';
 import 'package:mitask/features/task/domain/usecases/task_usecase.dart';
+import 'package:mitask/features/task/domain/usecases/update_task_usecase.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
 import 'package:mitask/features/task/presentation/bloc/task_state.dart';
 
@@ -9,11 +11,21 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final TaskUseCase task;
   final CreateTaskUseCase create;
   final TaskFilterUseCase filter;
+  final UpdateTaskUseCase update;
+  final DeleteTaskUseCase delete;
 
-  TaskBloc({required this.task, required this.create, required this.filter}) : super(TaskInitial()) {
+  TaskBloc({
+    required this.task,
+    required this.create,
+    required this.filter,
+    required this.update,
+    required this.delete,
+  }) : super(TaskInitial()) {
     on<TaskRequested>(_onTaskRequested);
     on<CreateRequested>(_onCreateRequested);
     on<FilterRequested>(_onFilterRequested);
+    on<UpdateRequested>(_onUpdateRequested);
+    on<DeleteRequested>(_onDeleteRequested);
   }
 
   Future<void> _onTaskRequested(
@@ -55,6 +67,34 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     result.fold(
       (failure) => emit(FilterFailure(message: failure.message)),
       (success) => emit(FilterLoaded(data: success)),
+    );
+  }
+
+  Future<void> _onUpdateRequested(
+    UpdateRequested event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(UpdateLoading());
+
+    final result = await update(event.data);
+
+    result.fold(
+      (failure) => emit(UpdateFailure(message: failure.message)),
+      (success) => emit(UpdateLoaded(data: success)),
+    );
+  }
+
+  Future<void> _onDeleteRequested(
+    DeleteRequested event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(DeleteLoading());
+
+    final result = await delete(event.id);
+
+    result.fold(
+      (failure) => emit(DeleteFailure(message: failure.message)),
+      (success) => emit(DeleteLoaded(data: success)),
     );
   }
 }

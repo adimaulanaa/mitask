@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
+import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
@@ -15,6 +16,7 @@ import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
 import 'package:mitask/features/task/presentation/bloc/task_state.dart';
 import 'package:mitask/features/task/presentation/pages/create_task_page.dart';
+import 'package:mitask/features/task/presentation/pages/update_task_page.dart';
 import 'package:mitask/features/task/presentation/widgets/custom_floating.dart';
 import 'package:mitask/features/task/presentation/widgets/list_task.dart';
 import 'package:mitask/features/task/presentation/widgets/widget_task.dart';
@@ -119,7 +121,16 @@ class _TaskPageState extends State<TaskPage> {
                     itemCount: _filterTaskData.length,
                     itemBuilder: (context, index) {
                       final task = _filterTaskData[index];
-                      return ListTask(data: task);
+                      return ListTask(
+                        data: task,
+                        onTap: () async {
+                          await context.pushPage(
+                            UpdateTaskPage(data: task),
+                            type: TransitionType.slide,
+                          );
+                          _taskBloc.add(TaskRequested());
+                        },
+                      );
                     },
                   )
                 : ListIsEmpty(),
@@ -143,8 +154,18 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _iconsFilter() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: Text(
+            '${_filterTaskData.length} Record',
+            style: AppTextStyle.caption.copyWith(
+              fontWeight: medium,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ),
         CustomInkWell(
           onTap: () {
             setState(() {
@@ -230,24 +251,42 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
         SizedBox(height: 5),
-        CustomInkWell(
-          onTap: () {
-            setState(() {
-              isAll = true;
-              isPin = false;
-              isFav = false;
-              isArch = false;
-              startDateCtr.clear();
-              endDateCtr.clear();
-              isFilter = !isFilter;
-            });
-          },
-          child: SvgPicture.asset(
-            MediaRes.filterRemove,
-            width: 20,
-            height: 20,
-            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Text(
+                '${_filterTaskData.length} Record',
+                style: AppTextStyle.caption.copyWith(
+                  fontWeight: medium,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ),
+            CustomInkWell(
+              onTap: () {
+                setState(() {
+                  isAll = true;
+                  isPin = false;
+                  isFav = false;
+                  isArch = false;
+                  startDateCtr.clear();
+                  endDateCtr.clear();
+                  isFilter = !isFilter;
+                });
+              },
+              child: SvgPicture.asset(
+                MediaRes.filterRemove,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

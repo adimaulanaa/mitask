@@ -110,8 +110,11 @@ class DatabaseService {
   // CRUD: GET ALL TASKS
   Future<List<Map<String, dynamic>>> getAllTasks() async {
     final db = await database;
+    // taskDeletedOn harus NULL atau 0 untuk dianggap aktif.
+    const String whereClause = '$taskDeletedOn IS NULL OR $taskDeletedOn = 0';
     return await db.query(
       taskTable,
+      where: whereClause, // 🛑 Tambahkan filter untuk soft delete
       orderBy: '$taskIsPinned DESC, $taskUpdatedOn DESC',
     );
   }

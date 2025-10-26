@@ -63,3 +63,39 @@ class FilterFailure extends TaskState {
   @override
   List<Object?> get props => [message];
 }
+
+class UpdateLoading extends TaskState {}
+class UpdateLoaded extends TaskState {
+  final String data;
+
+  const UpdateLoaded({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class UpdateFailure extends TaskState {
+  final String message;
+
+  const UpdateFailure({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class DeleteLoading extends TaskState {}
+class DeleteLoaded extends TaskState {
+  final String data;
+
+  const DeleteLoaded({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class DeleteFailure extends TaskState {
+  final String message;
+
+  const DeleteFailure({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

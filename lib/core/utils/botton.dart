@@ -75,7 +75,7 @@ class UIButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: borderRadius),
       ),
       UIButtonType.tonal => FilledButton.styleFrom(
-        backgroundColor: color.withValues(alpha: 0.1),
+        backgroundColor: color.withValues(alpha: 0.5),
         foregroundColor: color,
         padding: _padding,
         textStyle: getTextStyle(color),

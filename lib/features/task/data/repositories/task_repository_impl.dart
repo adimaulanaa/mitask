@@ -8,6 +8,7 @@ import 'package:mitask/features/task/domain/entities/task_entity.dart';
 import 'package:mitask/features/task/domain/repositories/task_repository.dart';
 import 'package:mitask/features/task/domain/usecases/params/create_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
+import 'package:mitask/features/task/domain/usecases/params/update_task_params.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final TaskRemoteDataSource remoteDataSource;
@@ -48,6 +49,32 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<Either<Failure, List<TaskEntity>>> filter(TaskFilterParams params) async {
     try {
       final result = await localDatasource.filter(params);
+      return Right(result);
+    } catch (e) {
+      if (kDebugMode) {
+        print(mapExceptionToFailure(e).message);
+      }
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> update(UpdateTaskParams params) async {
+    try {
+      final result = await localDatasource.update(params);
+      return Right(result);
+    } catch (e) {
+      if (kDebugMode) {
+        print(mapExceptionToFailure(e).message);
+      }
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, String>> delete(String id) async {
+    try {
+      final result = await localDatasource.delete(id);
       return Right(result);
     } catch (e) {
       if (kDebugMode) {
