@@ -4,7 +4,7 @@ import 'package:mitask/core/network/failure_mapper.dart';
 import 'package:mitask/core/network/hendler_failure.dart';
 import 'package:mitask/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:mitask/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
-import 'package:mitask/features/dashboard/data/models/date_model.dart';
+import 'package:mitask/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:mitask/features/dashboard/domain/repositories/dashboard_repository.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
@@ -17,7 +17,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   );
 
   @override
-  Future<Either<Failure, List<DateModel>>> dash() async {
+  Future<Either<Failure, DashboardEntity>> dash() async {
 
     try {
       final result = await localDatasource.dash();

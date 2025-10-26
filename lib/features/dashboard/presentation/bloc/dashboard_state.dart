@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mitask/features/dashboard/data/models/date_model.dart';
+import 'package:mitask/features/dashboard/domain/entities/dashboard_entity.dart';
 
 abstract class DashboardState extends Equatable {
   const DashboardState();
@@ -12,7 +12,7 @@ class DashboardInitial extends DashboardState {}
 
 class DashboardLoading extends DashboardState {}
 class DashboardLoaded extends DashboardState {
-  final List<DateModel> data;
+  final DashboardEntity data;
 
   const DashboardLoaded({required this.data});
 

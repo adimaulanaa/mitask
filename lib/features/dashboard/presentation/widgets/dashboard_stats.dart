@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/features/dashboard/domain/entities/dashboard_entity.dart';
 
 class QuickStatsSection extends StatelessWidget {
   final int pinnedTask;
@@ -33,7 +34,7 @@ class QuickStatsSection extends StatelessWidget {
             ),
             _buildStatCard(
               title: 'Favorite',
-              value: '$totalTask',
+              value: '$favoriteTask',
               icon: MediaRes.favorite,
               color: AppColors.primaryDark,
             ),
@@ -51,7 +52,7 @@ class QuickStatsSection extends StatelessWidget {
             ),
             _buildStatCard(
               title: 'Archived',
-              value: '$pinnedTask',
+              value: '$archivedTask',
               icon: MediaRes.archived,
               color: AppColors.primaryDark,
             ),
@@ -113,7 +114,8 @@ class QuickStatsSection extends StatelessWidget {
 }
 
 class RecentTask extends StatelessWidget {
-  const RecentTask({super.key});
+  final DashboardItemEntity data;
+  const RecentTask({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +141,7 @@ class RecentTask extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: SvgPicture.asset(
-                    MediaRes.pinned,
+                    data.logo,
                     colorFilter: ColorFilter.mode(
                       AppColors.primaryDark,
                       BlendMode.srcIn,
@@ -152,16 +154,18 @@ class RecentTask extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Title Task',
+                        data.title,
                         maxLines: 1, // Batasi 1 baris
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                       ),
                       Text(
-                        'your detail task your detail task your detail task',
+                        data.subtitle,
                         maxLines: 1, // Batasi 1 baris
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.caption.copyWith(fontWeight: regular),
+                        style: AppTextStyle.caption.copyWith(
+                          fontWeight: regular,
+                        ),
                       ),
                     ],
                   ),
@@ -171,7 +175,7 @@ class RecentTask extends StatelessWidget {
           ),
           SizedBox(width: 10),
           Text(
-            '3 Days ago',
+            data.created,
             style: AppTextStyle.small.copyWith(fontWeight: medium),
           ),
         ],

@@ -37,6 +37,7 @@ class _TaskPageState extends State<TaskPage> {
   final TextEditingController endDateCtr = TextEditingController();
   List<TaskEntity> _taskData = [];
   List<TaskEntity> _filterTaskData = [];
+  bool isNotLoading = false;
   bool isFilter = false;
   bool isAll = true;
   bool isPin = false;
@@ -67,12 +68,14 @@ class _TaskPageState extends State<TaskPage> {
             setState(() {
               _taskData = state.data;
               _filterTaskData = _taskData;
+              isNotLoading = true;
             });
           } else if (state is FilterLoaded) {
             LoadingScreen.hide(context);
             setState(() {
               _taskData = state.data;
               _filterTaskData = _taskData;
+              isNotLoading = true;
             });
           } else if (state is ChecklistLoaded) {
             LoadingScreen.hide(context);
@@ -159,7 +162,9 @@ class _TaskPageState extends State<TaskPage> {
                       );
                     },
                   )
-                : ListIsEmpty(),
+                : isNotLoading
+                ? ListIsEmpty()
+                : SizedBox.shrink(),
           ),
         ],
       ),
