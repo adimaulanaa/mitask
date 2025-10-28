@@ -183,3 +183,16 @@ class RecentTask extends StatelessWidget {
     );
   }
 }
+
+class IconsSvg extends StatelessWidget {
+  final String image;
+  const IconsSvg({super.key, required this.image});
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      image,
+      colorFilter: ColorFilter.mode(AppColors.primaryDark, BlendMode.srcIn),
+    );
+  }
+}

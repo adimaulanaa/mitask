@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mitask/core/media/media_colors.dart';
+import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
+import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:mitask/features/dashboard/presentation/pages/setting_page.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/dashboard_stats.dart';
+import 'package:mitask/features/task/presentation/widgets/widget_task.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -94,7 +99,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
             SizedBox(height: 10),
-            ListView.builder(
+            recentItems.isNotEmpty ? ListView.builder(
               // 1. Membuat tinggi menjadi dinamis (hanya setinggi konten)
               shrinkWrap: true,
               // 2. Mencegah ListView.builder menggulir sendiri
@@ -106,6 +111,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 final recent = recentItems[index];
                 return RecentTask(data: recent);
               },
+            ) : Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: ListIsEmpty(),
             ),
             SizedBox(height: 15),
           ],
@@ -118,12 +126,27 @@ class _DashboardPageState extends State<DashboardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          _dash?.name ?? '-',
-          style: AppTextStyle.primaryDark.copyWith(
-            fontWeight: bold,
-            fontSize: 24,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _dash?.name ?? '-',
+              style: AppTextStyle.primaryDark.copyWith(
+                fontWeight: bold,
+                fontSize: 24,
+              ),
+            ),
+            CustomInkWell(
+              onTap: () async {
+                await context.pushPage(
+                  const SettingPage(),
+                  type: TransitionType.slide,
+                );
+                _dashboardBloc.add(DashboardRequested());
+              },
+              child: IconsSvg(image: MediaRes.setting),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         Text(

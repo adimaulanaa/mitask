@@ -23,6 +23,7 @@ class MediaRes {
   static const favorite = '$_baseIcon/favorite.svg';
   static const totalTask = '$_baseIcon/total-task.svg';
   static const archived = '$_baseIcon/archived.svg';
+  static const setting = '$_baseIcon/setting.svg';
 
   // ! Task
   static const calendar = '$_baseIcon/calendar.svg';
