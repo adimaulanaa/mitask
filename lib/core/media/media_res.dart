@@ -16,7 +16,7 @@ class MediaRes {
   static const report = '$_baseIcon/report.svg';
 
   // ! Onboarding
-  static const omboarding = '$_baseImage/logo-basic.png';
+  static const onboarding = '$_baseImage/logo-basic.png';
 
   // ! Dashboard
   static const pinned = '$_baseIcon/pinned.svg';

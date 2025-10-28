@@ -87,8 +87,9 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
         : 'Belum ada catatan hari ini, waktu yang pas untuk bersantai ☕️';
 
     // 6. Kembalikan DashboardEntity
+    final name = storage.displayName;
     final result = DashboardEntity(
-      name: 'Hi, Adi 👋',
+      name: 'Hi, $name 👋',
       greetings: greetingMessage,
       pinned: pinnedCount,
       favorite: favoriteCount,

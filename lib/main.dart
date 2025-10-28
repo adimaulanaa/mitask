@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
-import 'package:mitask/onboarding.dart';
+import 'package:mitask/features/onboarding/splash_screen.dart';
 import 'package:mitask/services_locator.dart' as di;
 
 void main() async {
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins', // Mengatur font default untuk aplikasi
       ),
       title: StringResources.nameApp,
-      initialRoute: '/onboarding',
+      initialRoute: '/splash',
       // getPages: AppPages.routes,
       // unknownRoute: AppPages.routes.first,
       debugShowCheckedModeBanner: false, // Menyembunyikan banner debug
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         );
       },
       routes: {
-        '/onboarding': (context) => const Onboarding(),
+        '/splash': (context) => const SplashScreen(),
         // Definisikan rute lain di sini jika diperlukan
       },
     );

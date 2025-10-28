@@ -4,6 +4,7 @@ import 'package:mitask/core/storage/shared_pref_storage.dart';
 class StorageProvider {
   static const _storagePrefix = 'app_storage';
 
+  static const _keyInitialization = 'initialization';
   static const _keyUserId = 'user_id';
   static const _keyToken = 'token';
   static const _keyFirstName = 'first_name';
@@ -43,6 +44,8 @@ class StorageProvider {
   // set age(int value) => _storage.set<int>(_keyAge, value);
 
   // Bool
+  bool get isInitialization => _storage.get<bool>(_keyInitialization, defaultValue: false)!;
+  set isInitialization(bool value) => _storage.set<bool>(_keyInitialization, value);
   // bool get isInitialization => _storage.get<bool>(_keyInitialization, defaultValue: false)!;
   // set isInitialization(bool value) => _storage.set<bool>(_keyInitialization, value);
 
