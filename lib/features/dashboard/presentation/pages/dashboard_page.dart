@@ -6,6 +6,7 @@ import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
+import 'package:mitask/core/utils/empty_list.dart';
 import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:mitask/features/dashboard/presentation/bloc/dashboard_event.dart
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:mitask/features/dashboard/presentation/pages/setting_page.dart';
 import 'package:mitask/features/dashboard/presentation/widgets/dashboard_stats.dart';
-import 'package:mitask/features/task/presentation/widgets/widget_task.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});

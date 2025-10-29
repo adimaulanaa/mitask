@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
-import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 
@@ -78,30 +77,3 @@ class BoxTypeAllFilter extends StatelessWidget {
   }
 }
 
-class ListIsEmpty extends StatelessWidget {
-  const ListIsEmpty({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          MediaRes.logo,
-          width: 100,
-          height: 100,
-          color: AppColors.primary,
-        ),
-        SizedBox(height: 20),
-        Text(
-          'Data tidak tersedia.',
-          textAlign: TextAlign.center,
-          style: AppTextStyle.body.copyWith(
-            fontWeight: medium,
-            color: AppColors.primaryDark,
-          ),
-        ),
-      ],
-    );
-  }
-}

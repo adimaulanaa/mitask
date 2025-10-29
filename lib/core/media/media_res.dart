@@ -14,6 +14,7 @@ class MediaRes {
   static const dashboard = '$_baseIcon/dashboard.svg';
   static const task = '$_baseIcon/task.svg';
   static const report = '$_baseIcon/report.svg';
+  static const emptyList = '$_baseImage/document-empty.png';
 
   // ! Onboarding
   static const onboarding = '$_baseImage/logo-basic.png';
