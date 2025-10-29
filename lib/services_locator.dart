@@ -6,6 +6,12 @@ import 'package:mitask/features/dashboard/data/repositories/dashboard_repository
 import 'package:mitask/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:mitask/features/dashboard/domain/usecases/dashboard_usecase.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:mitask/features/report/data/datasources/report_local_datasource.dart';
+import 'package:mitask/features/report/data/datasources/report_remote_datasource.dart';
+import 'package:mitask/features/report/data/repositories/report_repository_impl.dart';
+import 'package:mitask/features/report/domain/repositories/report_repository.dart';
+import 'package:mitask/features/report/domain/usecases/report_usecase.dart';
+import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/features/services/database_service.dart';
 import 'package:mitask/features/task/data/datasources/task_local_datasource.dart';
 import 'package:mitask/features/task/data/datasources/task_remote_datasource.dart';
@@ -96,4 +102,31 @@ Future<void> init() async {
       checklist: sl<ChecklistTaskUseCase>(),
     ),
   );
+
+  //! Report
+  //! ---------------- Data Sources ----------------
+  sl.registerLazySingleton<ReportRemoteDataSource>(
+    () => ReportRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<ReportLocalDataSource>(
+    () => ReportLocalDataSourceImpl(
+      storage: sl<StorageProvider>(),
+      dbService: sl<DatabaseService>(),
+    ),
+  );
+
+  //! ---------------- Repository ----------------
+  sl.registerLazySingleton<ReportRepository>(
+    () => ReportRepositoryImpl(
+      sl<ReportRemoteDataSource>(),
+      sl<ReportLocalDataSource>(),
+    ),
+  );
+
+  //! ---------------- Use Cases ----------------
+  sl.registerLazySingleton(() => ReportUseCase(sl<ReportRepository>()));
+
+  //! ---------------- Bloc ----------------
+  sl.registerFactory(() => ReportBloc(report: sl<ReportUseCase>()));
 }

@@ -20,6 +20,8 @@ class MediaRes {
   static const onboarding = '$_baseImage/logo-basic.png';
 
   // ! Dashboard
+  static const complated = '$_baseIcon/tick-circle.svg';
+  static const notComplated = '$_baseIcon/close-circle.svg';
   static const pinned = '$_baseIcon/pinned.svg';
   static const favorite = '$_baseIcon/favorite.svg';
   static const totalTask = '$_baseIcon/total-task.svg';

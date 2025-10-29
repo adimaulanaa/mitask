@@ -26,7 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
   late DashboardBloc _dashboardBloc;
   DashboardEntity? _dash;
   List<DashboardItemEntity> recentItems = [];
-  String myName = 'Adi';
+  String myName = '-';
   int notes = 0;
 
   @override

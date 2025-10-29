@@ -93,7 +93,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               context,
               title: 'Berhasil',
               message: state.data,
-              // onButtonPressed: () => context.popPage(),
+              onButtonPressed: () => setState(() =>  isSaved = false),
             );
           } else if (state is DeleteLoaded) {
             LoadingScreen.hide(context);

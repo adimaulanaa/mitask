@@ -5,7 +5,7 @@ import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:mitask/features/report/report_page.dart';
+import 'package:mitask/features/report/presentation/pages/report_page.dart';
 import 'package:mitask/features/task/presentation/pages/task_page.dart';
 
 class NavigatorPage extends StatefulWidget {

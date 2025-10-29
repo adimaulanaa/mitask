@@ -5,7 +5,7 @@ import 'package:mitask/core/media/media_text.dart';
 
 class SummaryItem extends StatelessWidget {
   final String title;
-  final String value;
+  final int value;
   final String iconPath;
   final Color? iconBg;
   final Color? iconColor;
@@ -53,7 +53,7 @@ class SummaryItem extends StatelessWidget {
                 style: AppTextStyle.caption.copyWith(fontWeight: medium),
               ),
               Text(
-                value,
+                value.toString(),
                 style: AppTextStyle.caption.copyWith(fontWeight: semiBold),
               ),
             ],

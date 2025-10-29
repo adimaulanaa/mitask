@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/onboarding/splash_screen.dart';
 import 'package:mitask/services_locator.dart' as di;
@@ -20,6 +21,9 @@ void main() async {
         ),
         BlocProvider<TaskBloc>(
           create: (context) => getIt<TaskBloc>(),
+        ),
+        BlocProvider<ReportBloc>(
+          create: (context) => getIt<ReportBloc>(),
         ),
         // Tambahkan provider lain jika diperlukan
       ],
