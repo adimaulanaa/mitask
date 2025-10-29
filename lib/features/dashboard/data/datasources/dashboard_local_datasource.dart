@@ -23,12 +23,11 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
     final db = await dbService.getAllTasks();
     final DateTime now = DateTime.now();
 
-    // 1. Tentukan Batas Bawah Waktu: Awal hari ini (00:00:00)
-    // Ini memastikan semua tugas hari ini (tgl 26) dan masa depan disertakan.
+    // 1️⃣ Awal hari ini (00:00:00)
     final DateTime startOfToday = DateTime(now.year, now.month, now.day);
     final int lowerBoundTimestamp = startOfToday.millisecondsSinceEpoch;
 
-    // 2. Konversi Data
+    // 2️⃣ Konversi ke model
     Iterable<TaskModel> data = db.map((e) {
       try {
         return TaskModel.fromMap(e);
@@ -37,40 +36,21 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
       }
     });
 
-    // 3. Terapkan Filter Tanggal dan Status (Upcoming and Pending)
+    // 3️⃣ Filter tugas hari ini & yang belum selesai
     data = data.where((task) {
       final taskDate = task.dateOn ?? 0;
-
-      // Tugas harus memiliki tanggal yang valid (> 0)
       if (taskDate == 0) return false;
 
-      // Filter 1: Tanggal >= Awal Hari Ini
       final bool isUpcoming = taskDate >= lowerBoundTimestamp;
-
-      // Filter 2: isStatus = 0 (Pending/Belum Selesai)
       final bool isPending = task.isStatus == 0;
 
       return isUpcoming && isPending;
     });
 
-    final List<DashboardItemEntity> recentItemsList = data.map((task) {
-      // 🛠️ Gunakan fungsi format baru di sini
-      final String createdDate = formatTaskCreatedTime(task.createdOn ?? 0);
+    final List<TaskModel> pendingUpcomingTasks = data.toList();
+    final int pendingCount = pendingUpcomingTasks.length;
 
-      // Asumsi nilai untuk logo, title, dan subtitle
-      return DashboardItemEntity(
-        logo: getLogoAsset(task),
-        title: task.title ?? 'No Title',
-        subtitle: task.subtitle ?? 'No Subtitle',
-        created: createdDate, // Format tanggal dibuat
-      );
-    }).toList();
-
-    List<TaskModel> pendingUpcomingTasks = data.toList();
-    final int pendingCount =
-        pendingUpcomingTasks.length; // 🛠️ Dapatkan hitungan
-
-    // 4. Hitung Statistik Dashboard dari hasil filter
+    // 4️⃣ Hitung statistik
     final int pinnedCount = pendingUpcomingTasks
         .where((t) => t.isPinned == 1)
         .length;
@@ -81,23 +61,65 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
         .where((t) => t.isArchived == 1)
         .length;
 
-    // 5. Buat pesan Greeting
-    final String greetingMessage = (pendingCount > 0)
-        ? 'Ada $pendingCount catatan yang menunggu untuk kamu selesaikan 🌿'
-        : 'Belum ada catatan hari ini, waktu yang pas untuk bersantai ☕️';
+    // 5️⃣ Ambil semua task untuk cek "bulan ini"
+    final int startOfMonth = DateTime(
+      now.year,
+      now.month,
+      1,
+    ).millisecondsSinceEpoch;
+    final List<TaskModel> monthTasks = db
+        .map((e) => TaskModel.fromMap(e))
+        .where((task) => (task.dateOn ?? 0) >= startOfMonth)
+        .toList();
 
-    // 6. Kembalikan DashboardEntity
+    final int monthPendingCount = monthTasks
+        .where((t) => t.isStatus == 0)
+        .length;
+
+    // 6️⃣ Buat pesan Greeting yang lebih kontekstual
+    final String greetingMessage = _buildGreetingMessage(
+      todayPending: pendingCount,
+      monthPending: monthPendingCount,
+    );
+
+    // 7️⃣ Konversi ke DashboardItemEntity untuk recentItems
+    final List<DashboardItemEntity> recentItemsList = pendingUpcomingTasks.map((
+      task,
+    ) {
+      final String createdDate = formatTaskCreatedTime(task.createdOn ?? 0);
+      return DashboardItemEntity(
+        logo: getLogoAsset(task),
+        title: task.title ?? 'No Title',
+        subtitle: task.subtitle ?? 'No Subtitle',
+        created: createdDate,
+      );
+    }).toList();
+
+    // 8️⃣ Return hasil akhir
     final name = storage.displayName;
-    final result = DashboardEntity(
+    return DashboardEntity(
       name: 'Hi, $name 👋',
       greetings: greetingMessage,
       pinned: pinnedCount,
       favorite: favoriteCount,
       archived: archivedCount,
       total: data.length,
-      recentItems: recentItemsList, // Diisi sesuai kebutuhan
+      recentItems: recentItemsList,
     );
-    return result;
+  }
+
+  /// 🔹 Membuat greeting message yang dinamis
+  String _buildGreetingMessage({
+    required int todayPending,
+    required int monthPending,
+  }) {
+    if (todayPending > 0) {
+      return 'Ada $todayPending catatan yang menunggu untuk kamu selesaikan hari ini 🌿';
+    } else if (monthPending > 0) {
+      return 'Ga ada task hari ini, tapi masih ada $monthPending task yang belum selesai bulan ini 💪';
+    } else {
+      return 'Belum ada catatan hari ini, waktu yang pas untuk bersantai ☕️';
+    }
   }
 
   // 🛠️ Logika Penentuan Logo
