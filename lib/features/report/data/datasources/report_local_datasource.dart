@@ -17,7 +17,8 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
 
   @override
   Future<ReportEntity> report(ReportFilterParams params) async {
-    final db = await dbService.getAllTasks();
+    // Memanggil getAllTasks yang sudah difilter untuk hanya mendapatkan data AKTIF
+    final db = await dbService.getAllTasksNotDeleted();
 
     int pinnedCount = 0;
     int favoriteCount = 0;
@@ -26,14 +27,16 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
     int complatedCount = 0;
     int totalCount = 0;
 
-    // 1️⃣ Konversi data
+    // 1️⃣ Konversi data dengan PENANGANAN ERROR (mengganti rethrow)
+    // Gunakan whereType<TaskModel>() untuk membuang hasil null dari try/catch
     Iterable<TaskModel> data = db.map((e) {
       try {
         return TaskModel.fromMap(e);
       } catch (err) {
-        rethrow;
+        // Log error di sini jika perlu
+        return null; // Kembalikan null untuk data yang rusak
       }
-    });
+    }).whereType<TaskModel>(); // <-- Hanya mengambil objek TaskModel yang valid
 
     List<TaskModel> allTasks = data.toList();
 
@@ -55,12 +58,14 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
         startDate = null; // Semua data
     }
 
-    // 3️⃣ Filter task berdasarkan tanggal dateOn
+    // 3️⃣ Filter task berdasarkan tanggal dateOn (Menggunakan safe navigation)
     List<TaskModel> filteredTasks = allTasks.where((task) {
       if (startDate == null) return true; // Semua data
-      if (task.dateOn == null) return false;
+      
+      final taskDateTimestamp = task.dateOn ?? 0; // ✅ Menggunakan ?? 0
+      if (taskDateTimestamp == 0) return false;
 
-      final createdDate = DateTime.fromMillisecondsSinceEpoch(task.dateOn!);
+      final createdDate = DateTime.fromMillisecondsSinceEpoch(taskDateTimestamp);
       return createdDate.isAfter(startDate);
     }).toList();
 
@@ -74,14 +79,14 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
 
     // 5️⃣ Ambil prioritas tinggi untuk recentItems
     final List<TaskModel> priorityTask = filteredTasks
-        .where((e) => e.priority == 2)
+        .where((e) => (e.priority) == 2) // ✅ Menggunakan ?? 0 untuk priority
         .toList();
 
     final List<ReportItemEntity> recentItemsList = priorityTask.map((task) {
       final String createdDate = formatTaskCreatedTime(task.dateOn ?? 0);
       return ReportItemEntity(
         id: task.id,
-        title: task.title ?? 'No Title',
+        title: task.title ?? 'No Title', 
         subtitle: task.subtitle ?? 'No Subtitle',
         created: createdDate,
       );
@@ -106,26 +111,17 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
   ProductivityEntity calculateProductivity(List<TaskModel> tasks) {
     // 1️⃣ Buat map default untuk semua hari
     final Map<String, int> totalMap = {
-      "mon": 0,
-      "tue": 0,
-      "wed": 0,
-      "thu": 0,
-      "fri": 0,
-      "sat": 0,
-      "sun": 0,
+      "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0,
     };
     final Map<String, int> completedMap = {
-      "mon": 0,
-      "tue": 0,
-      "wed": 0,
-      "thu": 0,
-      "fri": 0,
-      "sat": 0,
-      "sun": 0,
+      "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0,
     };
 
     for (final task in tasks) {
-      final date = DateTime.fromMillisecondsSinceEpoch(task.dateOn ?? 0);
+      final taskDateTimestamp = task.dateOn ?? 0; // ✅ Menggunakan ?? 0
+      if (taskDateTimestamp == 0) continue; // Lewati task tanpa tanggal
+
+      final date = DateTime.fromMillisecondsSinceEpoch(taskDateTimestamp);
       final dayKey = _getDayKey(date);
 
       totalMap[dayKey] = (totalMap[dayKey] ?? 0) + 1;

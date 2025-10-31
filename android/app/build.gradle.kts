@@ -1,14 +1,29 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// --- BAGIAN INI DIUBAH UNTUK KOTLIN DSL ---
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    FileInputStream(keystorePropertiesFile).use { input ->
+        keystoreProperties.load(input)
+    }
+}
+
+fun getKeystoreProperty(key: String): String {
+    return keystoreProperties.getProperty(key) ?: throw IllegalStateException("Missing $key in key.properties")
+}
+// -------------------------------------------
+
 android {
     namespace = "com.example.mitask"
-    // Ganti dengan API level 35 secara manual.
-    compileSdk = 35 
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -23,18 +38,34 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.mitask"
-        // Anda juga harus mengganti targetSdk dan minSdk di sini.
-        minSdk = 24 // Nilai ini bisa disesuaikan, tapi 24 umumnya aman.
-        targetSdk = 35
-        versionCode = flutter.versionCode
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode.toInt()
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") { // Gunakan 'create' untuk Kotlin DSL
+            keyAlias = getKeystoreProperty("keyAlias")
+            keyPassword = getKeystoreProperty("keyPassword")
+            
+            // Menggunakan properti 'storeFile' dari key.properties
+            val storeFilePath = getKeystoreProperty("storeFile") 
+            storeFile = file(storeFilePath) 
+
+            storePassword = getKeystoreProperty("storePassword")
+        }
+    }
+
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") { // Gunakan 'getByName'
+            // Pastikan Anda MENGAKTIFKAN signingConfig release di sini
+            signingConfig = signingConfigs.getByName("release")
+            
+            // Aktifkan ProGuard / R8
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }

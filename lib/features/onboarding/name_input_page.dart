@@ -34,18 +34,19 @@ class _NameInputPageState extends State<NameInputPage> {
             "Mari Kenalan 👋",
             style: AppTextStyle.h3.copyWith(
               fontWeight: bold,
-              color: AppColors.textPrimary,
+              color: AppColors.background,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             "Berikan nama kamu agar kami bisa menyapamu setiap hari.",
             textAlign: TextAlign.center,
-            style: AppTextStyle.body.copyWith(color: AppColors.disabledText),
+            style: AppTextStyle.body.copyWith(color: AppColors.background),
           ),
           const SizedBox(height: 30),
           CustomTextField(
             label: "Nama Kamu",
+            colorLabel: AppColors.background,
             hintText: "Masukan nama kamu (Opsional)",
             controller: widget.controller,
             errorText: _errorText,
@@ -54,16 +55,17 @@ class _NameInputPageState extends State<NameInputPage> {
           UIButton(
             type: UIButtonType.filled,
             size: UIButtonSize.medium,
+            color: AppColors.background,
             child: Text(
               'Mulai Sekarang',
-              style: AppTextStyle.background.copyWith(fontWeight: semiBold),
+              style: AppTextStyle.primary.copyWith(fontWeight: semiBold),
             ),
             onPressed: () => widget.onNext(),
           ),
           const SizedBox(height: 12),
           Text(
             "Kamu bisa ubah nama ini nanti di Pengaturan.",
-            style: AppTextStyle.small.copyWith(color: AppColors.disabledText),
+            style: AppTextStyle.small.copyWith(color: AppColors.background),
           ),
         ],
       ),

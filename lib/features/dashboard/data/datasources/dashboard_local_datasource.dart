@@ -20,21 +20,29 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
 
   @override
   Future<DashboardEntity> dash() async {
-    final db = await dbService.getAllTasks();
+    // 1️⃣ Panggil getAllTasks: Sudah disinkronkan untuk hanya mengambil data AKTIF (deletedOn IS NULL OR 0)
+    final db = await dbService.getAllTasksNotDeleted();
     final DateTime now = DateTime.now();
 
-    // 1️⃣ Awal hari ini (00:00:00)
+    // Awal hari ini (00:00:00)
     final DateTime startOfToday = DateTime(now.year, now.month, now.day);
     final int lowerBoundTimestamp = startOfToday.millisecondsSinceEpoch;
 
-    // 2️⃣ Konversi ke model
-    Iterable<TaskModel> data = db.map((e) {
-      try {
-        return TaskModel.fromMap(e);
-      } catch (err) {
-        rethrow;
-      }
-    });
+    // 2️⃣ Konversi ke model dengan penanganan error yang aman (PERBAIKAN UTAMA)
+    // Jika konversi gagal (data rusak), kembalikan null dan filter (whereType<TaskModel>).
+    final Iterable<TaskModel> safeActiveTasks = db
+        .map((e) {
+          try {
+            return TaskModel.fromMap(e);
+          } catch (err) {
+            return null; // Kembalikan null
+          }
+        })
+        .whereType<
+          TaskModel
+        >(); // <-- Hanya ambil TaskModel yang valid (bukan null)
+
+    Iterable<TaskModel> data = safeActiveTasks;
 
     // 3️⃣ Filter tugas hari ini & yang belum selesai
     data = data.where((task) {
@@ -50,7 +58,7 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
     final List<TaskModel> pendingUpcomingTasks = data.toList();
     final int pendingCount = pendingUpcomingTasks.length;
 
-    // 4️⃣ Hitung statistik
+    // 4️⃣ Hitung statistik (berdasarkan tugas hari ini yang aktif dan pending)
     final int pinnedCount = pendingUpcomingTasks
         .where((t) => t.isPinned == 1)
         .length;
@@ -61,14 +69,15 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
         .where((t) => t.isArchived == 1)
         .length;
 
-    // 5️⃣ Ambil semua task untuk cek "bulan ini"
+    // 5️⃣ Ambil semua task AKTIF yang aman untuk cek "bulan ini"
     final int startOfMonth = DateTime(
       now.year,
       now.month,
       1,
     ).millisecondsSinceEpoch;
-    final List<TaskModel> monthTasks = db
-        .map((e) => TaskModel.fromMap(e))
+
+    // ✅ Menggunakan safeActiveTasks (data yang sudah dikonversi dengan aman)
+    final List<TaskModel> monthTasks = safeActiveTasks
         .where((task) => (task.dateOn ?? 0) >= startOfMonth)
         .toList();
 
@@ -89,21 +98,21 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
       final String createdDate = formatTaskCreatedTime(task.createdOn ?? 0);
       return DashboardItemEntity(
         logo: getLogoAsset(task),
-        title: task.title ?? 'No Title',
-        subtitle: task.subtitle ?? 'No Subtitle',
+        title: task.title ?? 'No Title', // ✅ Safe navigation
+        subtitle: task.subtitle ?? 'No Subtitle', // ✅ Safe navigation
         created: createdDate,
       );
     }).toList();
 
     // 8️⃣ Return hasil akhir
-    final name = storage.displayName;
+    final name = storage.displayName == '' ? '-' : storage.displayName;
     return DashboardEntity(
       name: 'Hi, $name 👋',
       greetings: greetingMessage,
       pinned: pinnedCount,
       favorite: favoriteCount,
       archived: archivedCount,
-      total: data.length,
+      total: data.length, // Total tugas aktif yang akan datang/pending
       recentItems: recentItemsList,
     );
   }
@@ -125,12 +134,12 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
   // 🛠️ Logika Penentuan Logo
   String getLogoAsset(TaskModel task) {
     if (task.isPinned == 1) {
-      return MediaRes.pinned; // Prioritas 1: Pin
+      return MediaRes.pinned;
     } else if (task.isFavorite == 1) {
-      return MediaRes.favorite; // Prioritas 2: Favorite
+      return MediaRes.favorite;
     } else if (task.isArchived == 1) {
-      return MediaRes.archived; // Prioritas 3: Archive
+      return MediaRes.archived;
     }
-    return MediaRes.totalTask; // Default jika tidak ada status khusus
+    return MediaRes.totalTask;
   }
 }

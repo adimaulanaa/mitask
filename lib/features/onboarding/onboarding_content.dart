@@ -22,21 +22,25 @@ class OnboardingContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(image, height: size.height * 0.3),
+          Image.asset(
+            image,
+            height: size.height * 0.3,
+            color: AppColors.background,
+          ),
           const SizedBox(height: 40),
           Text(
             title,
             textAlign: TextAlign.center,
             style: AppTextStyle.h3.copyWith(
               fontWeight: bold,
-              color: AppColors.textPrimary,
+              color: AppColors.background,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyle.body.copyWith(color: AppColors.disabledText),
+            style: AppTextStyle.body.copyWith(color: AppColors.background),
           ),
         ],
       ),

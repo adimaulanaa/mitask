@@ -82,7 +82,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: SafeArea(
         child: Column(
           children: [
@@ -124,7 +124,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Kembali",
                 style: AppTextStyle.body.copyWith(
                   fontWeight: semiBold,
-                  color: AppColors.primary,
+                  color: AppColors.background,
                 ),
               ),
             )
@@ -142,7 +142,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 width: currentPage == index ? 24 : 8,
                 decoration: BoxDecoration(
                   color: currentPage == index
-                      ? AppColors.primary
+                      ? AppColors.background
                       : AppColors.border,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -157,7 +157,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               "Lanjut",
               style: AppTextStyle.body.copyWith(
                 fontWeight: semiBold,
-                color: AppColors.primary,
+                color: AppColors.background,
               ),
             ),
           ),

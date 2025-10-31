@@ -10,7 +10,7 @@ class DatabaseService {
 
   // Konstanta Database
   static const String _dbName = 'mitask_database.db';
-  static const int _dbVersion = 2;
+  static const int _dbVersion = 1;
 
   // Nama Tabel
   static const String taskTable = 'ms_task';
@@ -91,6 +91,11 @@ class DatabaseService {
   // Menangani upgrade versi database
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // if (oldVersion < 2) {
+    //   // TAMBAHKAN kolom deletedOn
+    //   await db.execute(
+    //     'ALTER TABLE $taskTable ADD COLUMN $taskDeletedOn INTEGER DEFAULT 0;',
+    //   );
+    //   // Tambahkan kolom lain yang baru di Versi 2
     //   await db.execute(
     //     'ALTER TABLE $taskTable ADD COLUMN $taskSyncStatus INTEGER DEFAULT 0',
     //   );
@@ -115,6 +120,20 @@ class DatabaseService {
     return await db.query(
       taskTable,
       where: whereClause, // 🛑 Tambahkan filter untuk soft delete
+      orderBy: '$taskIsPinned DESC, $taskUpdatedOn DESC',
+    );
+  }
+
+  // CRUD: GET ALL TASKS DELETE NULL
+  Future<List<Map<String, dynamic>>> getAllTasksNotDeleted() async {
+    final db = await database;
+
+    // taskDeletedOn harus NULL atau 0 untuk dianggap aktif.
+    const String whereClause = '$taskDeletedOn IS NULL OR $taskDeletedOn = 0';
+
+    return await db.query(
+      taskTable,
+      where: whereClause, // ⬅️ Filter yang sudah benar untuk tugas aktif!
       orderBy: '$taskIsPinned DESC, $taskUpdatedOn DESC',
     );
   }

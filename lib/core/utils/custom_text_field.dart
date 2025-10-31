@@ -15,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final bool obscureText;
   final Color color;
+  final Color colorLabel;
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final FocusNode? focusNode;
@@ -33,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.color = AppColors.primary,
+    this.colorLabel = AppColors.textPrimary,
     this.prefixIcon,
     this.suffixIcon,
     this.focusNode,
@@ -78,7 +80,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
               children: [
                 Text(
                   widget.label,
-                  style: AppTextStyle.body.copyWith(fontWeight: medium),
+                  style: AppTextStyle.body.copyWith(
+                    fontWeight: medium,
+                    color: widget.colorLabel,
+                  ),
                 ),
                 if (widget.isRequired) // ➕ tampilkan bintang kalau wajib
                   const Text(
