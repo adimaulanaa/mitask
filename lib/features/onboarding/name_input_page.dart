@@ -25,49 +25,53 @@ class _NameInputPageState extends State<NameInputPage> {
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(MediaRes.onboarding, height: size.height * 0.3),
-          const SizedBox(height: 30),
-          Text(
-            "Mari Kenalan 👋",
-            style: AppTextStyle.h3.copyWith(
-              fontWeight: bold,
-              color: AppColors.background,
-            ),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(MediaRes.onboarding, height: size.height * 0.3),
+              const SizedBox(height: 30),
+              Text(
+                "Mari Kenalan 👋",
+                style: AppTextStyle.h3.copyWith(
+                  fontWeight: bold,
+                  color: AppColors.background,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Berikan nama kamu agar kami bisa menyapamu setiap hari.",
+                textAlign: TextAlign.center,
+                style: AppTextStyle.body.copyWith(color: AppColors.background),
+              ),
+              const SizedBox(height: 30),
+              CustomTextField(
+                label: "Nama Kamu",
+                colorLabel: AppColors.background,
+                hintText: "Masukan nama kamu (Opsional)",
+                controller: widget.controller,
+                errorText: _errorText,
+              ),
+              const SizedBox(height: 20),
+              UIButton(
+                type: UIButtonType.filled,
+                size: UIButtonSize.medium,
+                color: AppColors.background,
+                child: Text(
+                  'Mulai Sekarang',
+                  style: AppTextStyle.primary.copyWith(fontWeight: semiBold),
+                ),
+                onPressed: () => widget.onNext(),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Kamu bisa ubah nama ini nanti di Pengaturan.",
+                style: AppTextStyle.small.copyWith(color: AppColors.background),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            "Berikan nama kamu agar kami bisa menyapamu setiap hari.",
-            textAlign: TextAlign.center,
-            style: AppTextStyle.body.copyWith(color: AppColors.background),
-          ),
-          const SizedBox(height: 30),
-          CustomTextField(
-            label: "Nama Kamu",
-            colorLabel: AppColors.background,
-            hintText: "Masukan nama kamu (Opsional)",
-            controller: widget.controller,
-            errorText: _errorText,
-          ),
-          const SizedBox(height: 20),
-          UIButton(
-            type: UIButtonType.filled,
-            size: UIButtonSize.medium,
-            color: AppColors.background,
-            child: Text(
-              'Mulai Sekarang',
-              style: AppTextStyle.primary.copyWith(fontWeight: semiBold),
-            ),
-            onPressed: () => widget.onNext(),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "Kamu bisa ubah nama ini nanti di Pengaturan.",
-            style: AppTextStyle.small.copyWith(color: AppColors.background),
-          ),
-        ],
+        ),
       ),
     );
   }

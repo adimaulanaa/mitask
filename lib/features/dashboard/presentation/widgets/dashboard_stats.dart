@@ -119,6 +119,7 @@ class RecentTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = data.subtitle == '' ? '-' : data.subtitle;
     return Container(
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.only(bottom: 10),
@@ -160,7 +161,7 @@ class RecentTask extends StatelessWidget {
                         style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                       ),
                       Text(
-                        data.subtitle,
+                        subtitle,
                         maxLines: 1, // Batasi 1 baris
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyle.caption.copyWith(

@@ -43,6 +43,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   int tagColors = 0;
   bool isPinned = false;
   bool isFavorite = false;
+  bool isArchived = false;
   bool isSaved = false;
   String statusName = '-';
   Color colors = AppColors.primary;
@@ -93,7 +94,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               context,
               title: 'Berhasil',
               message: state.data,
-              onButtonPressed: () => setState(() =>  isSaved = false),
+              onButtonPressed: () => setState(() => isSaved = false),
             );
           } else if (state is DeleteLoaded) {
             LoadingScreen.hide(context);
@@ -231,6 +232,18 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
             },
           ),
           SizedBox(height: 10),
+          CustomOneSelector(
+            title: 'Archived',
+            hint: 'Mark as archived',
+            isSelected: isArchived,
+            onTap: () {
+              setState(() {
+                isArchived = !isArchived;
+                isSaved = true;
+              });
+            },
+          ),
+          SizedBox(height: 10),
           TagColorsSelector(
             selectedValue: tagColors,
             onChanged: (val) {
@@ -260,6 +273,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     priority = _task?.priority ?? 0;
     isPinned = _task?.isPinned == 1 ? true : false;
     isFavorite = _task?.isFavorite == 1 ? true : false;
+    isArchived = _task?.isArchived == 1 ? true : false;
     tagColors = _task?.colorTag ?? 0;
 
     // status
