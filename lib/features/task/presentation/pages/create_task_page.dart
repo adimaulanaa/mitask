@@ -51,6 +51,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     Size size = MediaQuery.of(context).size;
     return CustomScaffold(
       title: 'Add New Task',
+      showBackButton: true,
       backgroundColor: AppColors.background,
       body: BlocListener<TaskBloc, TaskState>(
         listener: (context, state) {

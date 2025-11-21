@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mitask/core/media/media_colors.dart';
+import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
 import 'package:mitask/core/storage/storage_provider.dart';
 import 'package:mitask/core/utils/botton.dart';
 import 'package:mitask/core/utils/custom_scaffold.dart';
 import 'package:mitask/core/utils/custom_text_field.dart';
+import 'package:mitask/core/utils/page_route.dart';
+import 'package:mitask/features/dashboard/presentation/pages/information_page.dart';
 import 'package:mitask/services_locator.dart';
 
 class SettingPage extends StatefulWidget {
@@ -27,6 +32,29 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      showBackButton: true,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: IconButton(
+            onPressed: () {
+              context.pushPage(
+                const InformationPage(),
+                type: TransitionType.slide,
+              );
+            },
+            icon: SvgPicture.asset(
+              MediaRes.info, // path svg kamu
+              width: 25,
+              height: 25,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+        ),
+      ],
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 15),

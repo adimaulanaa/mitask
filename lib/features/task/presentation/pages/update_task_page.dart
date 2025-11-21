@@ -61,6 +61,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     Size size = MediaQuery.of(context).size;
     return CustomScaffold(
       title: 'Task',
+      showBackButton: true,
       backgroundColor: AppColors.background,
       actions: [
         CustomInkWell(

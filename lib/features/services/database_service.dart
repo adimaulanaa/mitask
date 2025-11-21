@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:mitask/core/storage/storage_provider.dart';
+import 'package:mitask/services_locator.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
@@ -10,16 +13,16 @@ class DatabaseService {
 
   // Konstanta Database
   static const String _dbName = 'mitask_database.db';
-  static const int _dbVersion = 1;
+  static const int _dbVersion = 1; // ⬅️ Tetap 1 untuk rilis perdana
 
   // Nama Tabel
   static const String taskTable = 'ms_task';
 
   // Nama Kolom
-  static const String taskId = 'id'; // Dulu '_id'
-  static const String taskTitle = 'title'; // Dulu 'taskTitle'
-  static const String taskSubtitle = 'subtitle'; // Dulu 'taskSubtitle'
-  static const String taskNotes = 'notes'; // Dulu 'taskNotes'
+  static const String taskId = 'id';
+  static const String taskTitle = 'title';
+  static const String taskSubtitle = 'subtitle';
+  static const String taskNotes = 'notes';
   static const String taskIsStatus = 'isStatus';
   static const String taskStatusName = 'statusName';
   static const String taskIsType = 'type';
@@ -30,7 +33,10 @@ class DatabaseService {
   static const String taskDateOn = 'dateOn';
   static const String taskCreatedOn = 'createdOn';
   static const String taskUpdatedOn = 'updatedOn';
-  static const String taskDeletedOn = 'deletedOn';
+  
+  // ⬅️ PERBAIKAN: Mengganti nama kolom menjadi 'soft_deleted_on'
+  static const String taskSoftDeletedOn = 'soft_deleted_on'; 
+  
   static const String taskColorTag = 'colorTag';
   static const String taskIsPinned = 'isPinned';
   static const String taskSyncStatus = 'syncStatus';
@@ -53,13 +59,27 @@ class DatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, _dbName);
 
-    return await openDatabase(
+    final storage = sl<StorageProvider>();
+    // Asumsikan `database_initialized` adalah false jika belum pernah diset
+    final isInitialized = storage.isInitialization;
+    
+    // JIKA TIDAK PERNAH DIINISIALISASI SEBELUMNYA (di run pertama/setelah clear data)
+    if (!isInitialized) {
+      // 1. HAPUS database lama yang tersisa (jika ada sisa dari debug/uninstall)
+      await deleteDatabase(path); 
+      debugPrint('Database lama dihapus karena ini dianggap instalasi pertama/clean run.');
+    }
+    
+    // 2. Buka database baru (ini akan memicu _onCreate jika dihapus, atau membuka yang sudah ada)
+    final db = await openDatabase(
       path,
       version: _dbVersion,
       onCreate: _onCreate,
       onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'),
       onUpgrade: _onUpgrade,
     );
+
+    return db;
   }
 
   // Membuat tabel ketika database baru dibuat
@@ -80,7 +100,7 @@ class DatabaseService {
         $taskDateOn INTEGER DEFAULT 0,
         $taskCreatedOn INTEGER DEFAULT 0,
         $taskUpdatedOn INTEGER DEFAULT 0,
-        $taskDeletedOn INTEGER DEFAULT 0,
+        $taskSoftDeletedOn INTEGER DEFAULT 0,  // ⬅️ Menggunakan nama baru
         $taskColorTag INTEGER DEFAULT 0,
         $taskIsPinned INTEGER DEFAULT 0,
         $taskSyncStatus INTEGER DEFAULT 0
@@ -90,16 +110,9 @@ class DatabaseService {
 
   // Menangani upgrade versi database
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // if (oldVersion < 2) {
-    //   // TAMBAHKAN kolom deletedOn
-    //   await db.execute(
-    //     'ALTER TABLE $taskTable ADD COLUMN $taskDeletedOn INTEGER DEFAULT 0;',
-    //   );
-    //   // Tambahkan kolom lain yang baru di Versi 2
-    //   await db.execute(
-    //     'ALTER TABLE $taskTable ADD COLUMN $taskSyncStatus INTEGER DEFAULT 0',
-    //   );
-    // }
+    // Biarkan kosong untuk saat ini (rilis perdana)
+    // Jika nanti ada perubahan skema, naikkan _dbVersion menjadi 2,
+    // dan tambahkan skrip ALTER TABLE di sini.
   }
 
   // CRUD: INSERT
@@ -113,6 +126,7 @@ class DatabaseService {
   }
 
   // CRUD: GET ALL TASKS
+  // Hati-hati: Fungsi ini mengambil semua data, termasuk yang sudah di-soft-delete!
   Future<List<Map<String, dynamic>>> getAllTasks() async {
     final db = await database;
     return await db.query(
@@ -125,8 +139,8 @@ class DatabaseService {
   Future<List<Map<String, dynamic>>> getAllTasksNotDeleted() async {
     final db = await database;
 
-    // taskDeletedOn harus NULL atau 0 untuk dianggap aktif.
-    const String whereClause = '$taskDeletedOn IS NULL OR $taskDeletedOn = 0';
+    // ⬅️ Menggunakan konstanta nama kolom baru
+    const String whereClause = '$taskSoftDeletedOn IS NULL OR $taskSoftDeletedOn = 0'; 
 
     return await db.query(
       taskTable,
@@ -163,7 +177,7 @@ class DatabaseService {
     final db = await database;
     return await db.update(
       taskTable,
-      {taskDeletedOn: DateTime.now().millisecondsSinceEpoch},
+      {taskSoftDeletedOn: DateTime.now().millisecondsSinceEpoch}, // ⬅️ Menggunakan nama baru
       where: '$taskId = ?',
       whereArgs: [id],
     );
