@@ -131,6 +131,6 @@ Future<void> init() async {
 
   //! ---------------- Bloc ----------------
   sl.registerFactory(
-    () => ReportBloc(report: sl<ReportUseCase>(), all: sl<AllNotesUseCase>()),
+    () => ReportBloc(report: sl<ReportUseCase>(), all: sl<AllNotesUseCase>(),),
   );
 }

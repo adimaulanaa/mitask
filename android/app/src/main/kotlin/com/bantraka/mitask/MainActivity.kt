@@ -1,4 +1,4 @@
-package com.example.mitask
+package com.bantraka.mitask
 
 import io.flutter.embedding.android.FlutterActivity
 

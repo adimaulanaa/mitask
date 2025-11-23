@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/app_version.dart';
 import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_scaffold.dart';
 import 'package:mitask/core/utils/page_route.dart';
@@ -28,7 +30,6 @@ class _InformationPageState extends State<InformationPage> {
       showBackButton: false,
       showAppBar: false,
       backgroundColor: AppColors.disabledBg,
-      // title: 'Informasi Aplikasi',
       body: Column(
         children: [
           Expanded(
@@ -54,7 +55,7 @@ class _InformationPageState extends State<InformationPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 25, top: 10),
             child: Text(
-              "Developed by · Adi Maulana · Bantraka",
+              StringResources.credit,
               style: AppTextStyle.caption.copyWith(
                 fontWeight: regular,
                 color: AppColors.textPrimary,
@@ -81,7 +82,7 @@ class _InformationPageState extends State<InformationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Sosial & Kontak",
+                  StringResources.featureSocialContact,
                   style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                 ),
                 SvgPicture.asset(
@@ -106,18 +107,18 @@ class _InformationPageState extends State<InformationPage> {
                 children: [
                   SocialContact(
                     icon: Icons.email_outlined,
-                    title: "Email",
-                    value: "adimaulana0777@email.com",
+                    title: StringResources.email,
+                    value: StringResources.emailLabel,
                   ),
                   SocialContact(
                     icon: Icons.code_outlined,
-                    title: "GitHub",
-                    value: "github.com/adimaulanaa",
+                    title: StringResources.github,
+                    value: StringResources.githubLabel,
                   ),
                   SocialContact(
                     icon: Icons.link_outlined,
-                    title: "LinkedIn",
-                    value: "linkedin.com/in/adi-maulana",
+                    title: StringResources.linkedIn,
+                    value: StringResources.linkedInLabel,
                   ),
                 ],
               ),
@@ -142,7 +143,7 @@ class _InformationPageState extends State<InformationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Fitur Aplikasi",
+                  StringResources.featureApps,
                   style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                 ),
                 SvgPicture.asset(
@@ -195,7 +196,7 @@ class _InformationPageState extends State<InformationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Tentang Aplikasi",
+                  StringResources.featureApps,
                   style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                 ),
                 SvgPicture.asset(
@@ -217,7 +218,7 @@ class _InformationPageState extends State<InformationPage> {
               child: Column(
                 children: [
                   Text(
-                    "MiTask adalah aplikasi manajemen tugas yang dirancang untuk membantu pengguna mengatur aktivitas dan meningkatkan produktivitas.",
+                    StringResources.featureAppsLabel,
                     textAlign: TextAlign.justify,
                     style: AppTextStyle.caption.copyWith(
                       fontWeight: regular,
@@ -246,7 +247,7 @@ class _InformationPageState extends State<InformationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Privasi Pengguna",
+                  StringResources.featurePrevacy,
                   style: AppTextStyle.body.copyWith(fontWeight: semiBold),
                 ),
                 SvgPicture.asset(
@@ -268,7 +269,7 @@ class _InformationPageState extends State<InformationPage> {
               child: Column(
                 children: [
                   Text(
-                    "Aplikasi ini hanya menyimpan data secara lokal dan tidak mengirimkan data apa pun ke server luar.",
+                    StringResources.featurePrevacyLabel,
                     textAlign: TextAlign.justify,
                     style: AppTextStyle.caption.copyWith(
                       fontWeight: regular,
@@ -326,7 +327,7 @@ class _InformationPageState extends State<InformationPage> {
                   Image.asset(MediaRes.logo, height: size.height * 0.1),
                   const SizedBox(height: 5),
                   Text(
-                    "MiTask",
+                    StringResources.nameApp,
                     style: AppTextStyle.h3.copyWith(
                       fontWeight: semiBold,
                       color: AppColors.textPrimary,
@@ -334,15 +335,15 @@ class _InformationPageState extends State<InformationPage> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "v1.0.0",
-                    style: AppTextStyle.body.copyWith(
+                    "v${AppInfo.version} (Build ${AppInfo.buildNumber})",
+                    style: AppTextStyle.caption.copyWith(
                       fontWeight: medium,
                       color: AppColors.textTertiary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "Manajemen Tugas Harian",
+                    StringResources.subNameApp,
                     style: AppTextStyle.body.copyWith(
                       fontWeight: medium,
                       color: AppColors.textTertiary,

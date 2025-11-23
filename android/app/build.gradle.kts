@@ -22,7 +22,7 @@ fun getKeystoreProperty(key: String): String {
 // -------------------------------------------
 
 android {
-    namespace = "com.example.mitask"
+    namespace = "com.bantraka.mitask"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -37,7 +37,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.mitask"
+        applicationId = "com.bantraka.mitask"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode.toInt()
