@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mitask/core/config/config_resources.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
@@ -65,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Image.asset(
               MediaRes.onboarding,
               width: size.width * 0.6,
-              height: size.height * 0.2,
+              height: size.height * 0.3,
               fit: BoxFit.contain,
               color: AppColors.background,
             ),
@@ -101,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               Text(
-                'by Adi Maulana',
+                StringResources.credit,
                 style: AppTextStyle.small.copyWith(color: AppColors.background),
               ),
             ],

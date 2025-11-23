@@ -30,7 +30,13 @@ class _NameInputPageState extends State<NameInputPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(MediaRes.onboarding, height: size.height * 0.3),
+              Image.asset(
+                MediaRes.onboarding,
+                width: size.width * 0.6,
+                height: size.height * 0.3,
+                fit: BoxFit.contain,
+                color: AppColors.background,
+              ),
               const SizedBox(height: 30),
               Text(
                 "Mari Kenalan 👋",

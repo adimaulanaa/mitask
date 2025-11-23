@@ -74,21 +74,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
   late final List<Widget> _pages = [
     const OnboardingContent(
       image: MediaRes.onboarding,
-      title: 'Selamat Datang di Mini Task',
+      title: 'Selamat Datang di MiTask',
       subtitle:
-          'Aplikasi sederhana untuk membantu kamu mengatur tugas harian dengan mudah.',
+          'Aplikasi manajemen tugas sederhana untuk membantumu tetap teratur dan produktif setiap hari.',
     ),
     const OnboardingContent(
       image: MediaRes.onboarding,
-      title: 'Ingatkan Diri dengan Reminder',
+      title: 'Kelola Tugas Tanpa Ribet',
       subtitle:
-          'Jangan lewatkan tugas penting. Atur pengingat sesuai kebutuhanmu.',
+          'Catat, susun, dan selesaikan tugas harianmu dengan lebih mudah dan cepat.',
     ),
     const OnboardingContent(
       image: MediaRes.onboarding,
-      title: 'Atur Prioritas Tugas',
+      title: 'Prioritas & Pengingat Otomatis',
       subtitle:
-          'Tandai mana yang penting dan mana yang bisa nanti. Fokus pada hal utama setiap hari.',
+          'Tandai tugas penting dan aktifkan pengingat agar tidak ada lagi jadwal yang terlewat.',
     ),
     NameInputPage(controller: nameController, onNext: _finishOnboarding),
   ];

@@ -24,6 +24,7 @@ class OnboardingContent extends StatelessWidget {
         children: [
           Image.asset(
             image,
+            width: size.width * 0.6,
             height: size.height * 0.3,
             color: AppColors.background,
           ),
