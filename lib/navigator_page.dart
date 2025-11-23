@@ -35,11 +35,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
 
   void _setupPagesAndNavItems() {
     // Menetapkan 5 Halaman Utama
-    _pages = [
-      const DashboardPage(),
-      const TaskPage(),
-      const ReportPage(),
-    ];
+    _pages = [const DashboardPage(), const TaskPage(), const ReportPage()];
 
     // Menetapkan 4 Item Navigasi
     _navItems = [
@@ -60,7 +56,6 @@ class _NavigatorPageState extends State<NavigatorPage> {
 
   @override
   Widget build(BuildContext context) {
-
     // Dapatkan padding bawah dari sistem
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
 
@@ -125,8 +120,10 @@ class _NavigatorPageState extends State<NavigatorPage> {
             label,
             textAlign: TextAlign.center,
             style: AppTextStyle.small.copyWith(
-              fontWeight: isSelected ? semiBold : medium,
-              color: isSelected ? AppColors.primary : AppColors.textTertiary,
+              fontWeight: isSelected ? medium : regular,
+              color: isSelected
+                  ? AppColors.textPrimary
+                  : AppColors.textTertiary,
             ),
           ),
           // SizedBox(height: 5),

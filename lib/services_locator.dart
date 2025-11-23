@@ -10,6 +10,7 @@ import 'package:mitask/features/report/data/datasources/report_local_datasource.
 import 'package:mitask/features/report/data/datasources/report_remote_datasource.dart';
 import 'package:mitask/features/report/data/repositories/report_repository_impl.dart';
 import 'package:mitask/features/report/domain/repositories/report_repository.dart';
+import 'package:mitask/features/report/domain/usecases/all_note_usecase.dart';
 import 'package:mitask/features/report/domain/usecases/report_usecase.dart';
 import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/features/services/database_service.dart';
@@ -126,7 +127,10 @@ Future<void> init() async {
 
   //! ---------------- Use Cases ----------------
   sl.registerLazySingleton(() => ReportUseCase(sl<ReportRepository>()));
+  sl.registerLazySingleton(() => AllNotesUseCase(sl<ReportRepository>()));
 
   //! ---------------- Bloc ----------------
-  sl.registerFactory(() => ReportBloc(report: sl<ReportUseCase>()));
+  sl.registerFactory(
+    () => ReportBloc(report: sl<ReportUseCase>(), all: sl<AllNotesUseCase>()),
+  );
 }

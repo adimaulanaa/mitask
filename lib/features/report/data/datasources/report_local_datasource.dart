@@ -1,12 +1,14 @@
 import 'package:mitask/core/storage/storage_provider.dart';
 import 'package:mitask/core/utils/date_utils.dart';
 import 'package:mitask/features/report/domain/entities/report_entity.dart';
+import 'package:mitask/features/report/domain/usecases/params/all_notes_params.dart';
 import 'package:mitask/features/report/domain/usecases/params/report_filter_params.dart';
 import 'package:mitask/features/services/database_service.dart';
 import 'package:mitask/features/task/data/models/task_model.dart';
 
 abstract class ReportLocalDataSource {
   Future<ReportEntity> report(ReportFilterParams params);
+  Future<List<TaskModel>> allNotes(AllNotesParams params);
 }
 
 class ReportLocalDataSourceImpl implements ReportLocalDataSource {
@@ -61,11 +63,13 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
     // 3️⃣ Filter task berdasarkan tanggal dateOn (Menggunakan safe navigation)
     List<TaskModel> filteredTasks = allTasks.where((task) {
       if (startDate == null) return true; // Semua data
-      
+
       final taskDateTimestamp = task.dateOn ?? 0; // ✅ Menggunakan ?? 0
       if (taskDateTimestamp == 0) return false;
 
-      final createdDate = DateTime.fromMillisecondsSinceEpoch(taskDateTimestamp);
+      final createdDate = DateTime.fromMillisecondsSinceEpoch(
+        taskDateTimestamp,
+      );
       return createdDate.isAfter(startDate);
     }).toList();
 
@@ -86,7 +90,7 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
       final String createdDate = formatTaskCreatedTime(task.dateOn ?? 0);
       return ReportItemEntity(
         id: task.id,
-        title: task.title ?? 'No Title', 
+        title: task.title ?? 'No Title',
         subtitle: task.subtitle ?? 'No Subtitle',
         created: createdDate,
       );
@@ -111,10 +115,22 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
   ProductivityEntity calculateProductivity(List<TaskModel> tasks) {
     // 1️⃣ Buat map default untuk semua hari
     final Map<String, int> totalMap = {
-      "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0,
+      "mon": 0,
+      "tue": 0,
+      "wed": 0,
+      "thu": 0,
+      "fri": 0,
+      "sat": 0,
+      "sun": 0,
     };
     final Map<String, int> completedMap = {
-      "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0,
+      "mon": 0,
+      "tue": 0,
+      "wed": 0,
+      "thu": 0,
+      "fri": 0,
+      "sat": 0,
+      "sun": 0,
     };
 
     for (final task in tasks) {
@@ -143,5 +159,36 @@ class ReportLocalDataSourceImpl implements ReportLocalDataSource {
   String _getDayKey(DateTime date) {
     const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     return days[date.weekday - 1];
+  }
+
+  @override
+  Future<List<TaskModel>> allNotes(AllNotesParams params) async {
+    final db = await dbService.getAllTasks();
+    Iterable<TaskModel> data = db.map((e) {
+      try {
+        return TaskModel.fromMap(e);
+      } catch (err) {
+        // Log error di sini jika perlu
+        return null; // Kembalikan null untuk data yang rusak
+      }
+    }).whereType<TaskModel>(); // <-- Hanya mengambil objek TaskModel yang valid
+
+    // --- Mulai Filtering ---
+    List<TaskModel> result = data.where((task) {
+      // FILTER by DATE RANGE
+      if (params.startDate != null && params.endDate != null) {
+        final taskDate = DateTime.fromMillisecondsSinceEpoch(task.dateOn ?? 0);
+
+        final start = params.startDate!;
+        final end = params.endDate!;
+
+        if (taskDate.isBefore(start) || taskDate.isAfter(end)) {
+          return false;
+        }
+      }
+
+      return true;
+    }).toList();
+    return result;
   }
 }

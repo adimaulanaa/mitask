@@ -4,15 +4,18 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mitask/core/media/media_colors.dart';
 import 'package:mitask/core/media/media_res.dart';
 import 'package:mitask/core/media/media_text.dart';
+import 'package:mitask/core/utils/custom_inkwell.dart';
 import 'package:mitask/core/utils/custom_loading.dart';
 import 'package:mitask/core/utils/custom_popup.dart';
 import 'package:mitask/core/utils/custom_scaffold.dart';
 import 'package:mitask/core/utils/custom_select_field.dart';
+import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/report/domain/entities/report_entity.dart';
 import 'package:mitask/features/report/domain/usecases/params/report_filter_params.dart';
 import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/features/report/presentation/bloc/report_event.dart';
 import 'package:mitask/features/report/presentation/bloc/report_state.dart';
+import 'package:mitask/features/report/presentation/pages/all_notes_page.dart';
 import 'package:mitask/features/report/presentation/widgets/widget_report.dart';
 
 class ReportPage extends StatefulWidget {
@@ -104,11 +107,19 @@ class _ReportPageState extends State<ReportPage> {
                   'REPORT DASHBOARD',
                   style: AppTextStyle.h3.copyWith(fontWeight: semiBold),
                 ),
-                SvgPicture.asset(
-                  MediaRes.totalTask,
-                  colorFilter: ColorFilter.mode(
-                    AppColors.primaryDark,
-                    BlendMode.srcIn,
+                CustomInkWell(
+                  onTap: () {
+                    context.pushPage(
+                      const AllNotesPage(),
+                      type: TransitionType.slide,
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    MediaRes.totalTask,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.primaryDark,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ],

@@ -71,9 +71,12 @@ class ProgressItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Hitung persentase (0.0 → 0%, 1.0 → 100%)
+    final int percent = (value * 100).round();
+
     return Row(
       children: [
-        // 🔹 Lebar tetap untuk label hari biar sejajar
+        // 🔹 Label hari (width tetap)
         SizedBox(
           width: 40,
           child: Text(
@@ -82,18 +85,16 @@ class ProgressItems extends StatelessWidget {
           ),
         ),
 
-        // 🔹 Garis pemisah tengah
+        // 🔹 Garis pemisah |
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             '|',
-            style: AppTextStyle.caption.copyWith(
-              fontWeight: medium,
-            ),
+            style: AppTextStyle.caption.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
 
-        // 🔹 Progress bar fleksibel mengikuti lebar layar
+        // 🔹 Progress bar
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -102,6 +103,22 @@ class ProgressItems extends StatelessWidget {
               backgroundColor: AppColors.border.withValues(alpha: 0.7),
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               minHeight: 8,
+            ),
+          ),
+        ),
+
+        // 🔹 Jarak kecil
+        const SizedBox(width: 5),
+
+        // 🔹 Persentase
+        SizedBox(
+          width: 40, // Biarkan seragam agar UI rapi
+          child: Text(
+            "$percent%",
+            textAlign: TextAlign.right,
+            style: AppTextStyle.caption.copyWith(
+              fontWeight: medium,
+              color: AppColors.textTertiary,
             ),
           ),
         ),

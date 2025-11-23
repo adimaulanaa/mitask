@@ -6,7 +6,9 @@ import 'package:mitask/features/report/data/datasources/report_local_datasource.
 import 'package:mitask/features/report/data/datasources/report_remote_datasource.dart';
 import 'package:mitask/features/report/domain/entities/report_entity.dart';
 import 'package:mitask/features/report/domain/repositories/report_repository.dart';
+import 'package:mitask/features/report/domain/usecases/params/all_notes_params.dart';
 import 'package:mitask/features/report/domain/usecases/params/report_filter_params.dart';
+import 'package:mitask/features/task/domain/entities/task_entity.dart';
 
 class ReportRepositoryImpl implements ReportRepository {
   final ReportRemoteDataSource remoteDataSource;
@@ -22,6 +24,20 @@ class ReportRepositoryImpl implements ReportRepository {
 
     try {
       final result = await localDatasource.report(params);
+      return Right(result);
+    } catch (e) {
+      if (kDebugMode) {
+        print(mapExceptionToFailure(e).message);
+      }
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<TaskEntity>>> allNotes(AllNotesParams params) async {
+
+    try {
+      final result = await localDatasource.allNotes(params);
       return Right(result);
     } catch (e) {
       if (kDebugMode) {

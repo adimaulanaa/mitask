@@ -252,6 +252,7 @@ class CustomDateInput extends StatefulWidget {
   final String hintText;
   final Color color;
   final String? errorText;
+  final bool isPrefix;
   final Function onTap;
 
   const CustomDateInput({
@@ -260,6 +261,7 @@ class CustomDateInput extends StatefulWidget {
     required this.hintText,
     this.errorText,
     this.color = AppColors.primary, // Ganti dengan default warna aksen Anda
+    this.isPrefix = true,
     required this.onTap,
   });
 
@@ -317,16 +319,21 @@ class _CustomDateInputState extends State<CustomDateInput> {
         ),
 
         // Ikon Kalender sebagai Suffix
-        prefixIcon: Padding(
-          padding: const EdgeInsets.only(left: 5.0),
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: SvgPicture.asset(
-              MediaRes.calendar,
-              colorFilter: ColorFilter.mode(enabledColor, BlendMode.srcIn),
-            ),
-          ),
-        ),
+        prefixIcon: widget.isPrefix
+            ? Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: SvgPicture.asset(
+                    MediaRes.calendar,
+                    colorFilter: ColorFilter.mode(
+                      enabledColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              )
+            : null,
 
         filled: true,
         fillColor: AppColors
