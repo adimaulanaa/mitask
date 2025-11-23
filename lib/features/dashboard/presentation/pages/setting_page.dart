@@ -22,6 +22,7 @@ class _SettingPageState extends State<SettingPage> {
   final storage = sl<StorageProvider>();
   final TextEditingController namaCtr = TextEditingController();
   String? errorNama;
+  bool isSubmitted = false;
 
   @override
   void initState() {
@@ -66,6 +67,14 @@ class _SettingPageState extends State<SettingPage> {
                 hintText: 'Masukkan nama kamu',
                 controller: namaCtr,
                 errorText: errorNama,
+                onChanged: (value) {
+                  if (value == '') {
+                    isSubmitted = false;
+                  } else {
+                    isSubmitted = true;
+                  }
+                  setState(() {});
+                },
               ),
             ],
           ),
@@ -75,11 +84,14 @@ class _SettingPageState extends State<SettingPage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: UIButton(
-          type: UIButtonType.filled,
+          type: isSubmitted ? UIButtonType.filled : UIButtonType.outlined,
           size: UIButtonSize.medium,
           child: Text(
             'Saved',
-            style: AppTextStyle.background.copyWith(fontWeight: semiBold),
+            style: AppTextStyle.body.copyWith(
+              color: isSubmitted ? AppColors.background : AppColors.primary,
+              fontWeight: semiBold,
+            ),
           ),
           onPressed: () {
             if (validateForm()) {
