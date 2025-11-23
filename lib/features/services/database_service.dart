@@ -33,10 +33,10 @@ class DatabaseService {
   static const String taskDateOn = 'dateOn';
   static const String taskCreatedOn = 'createdOn';
   static const String taskUpdatedOn = 'updatedOn';
-  
+
   // ⬅️ PERBAIKAN: Mengganti nama kolom menjadi 'soft_deleted_on'
-  static const String taskSoftDeletedOn = 'soft_deleted_on'; 
-  
+  static const String taskSoftDeletedOn = 'soft_deleted_on';
+
   static const String taskColorTag = 'colorTag';
   static const String taskIsPinned = 'isPinned';
   static const String taskSyncStatus = 'syncStatus';
@@ -62,14 +62,16 @@ class DatabaseService {
     final storage = sl<StorageProvider>();
     // Asumsikan `database_initialized` adalah false jika belum pernah diset
     final isInitialized = storage.isInitialization;
-    
+
     // JIKA TIDAK PERNAH DIINISIALISASI SEBELUMNYA (di run pertama/setelah clear data)
     if (!isInitialized) {
       // 1. HAPUS database lama yang tersisa (jika ada sisa dari debug/uninstall)
-      await deleteDatabase(path); 
-      debugPrint('Database lama dihapus karena ini dianggap instalasi pertama/clean run.');
+      await deleteDatabase(path);
+      debugPrint(
+        'Database lama dihapus karena ini dianggap instalasi pertama/clean run.',
+      );
     }
-    
+
     // 2. Buka database baru (ini akan memicu _onCreate jika dihapus, atau membuka yang sudah ada)
     final db = await openDatabase(
       path,
@@ -100,7 +102,7 @@ class DatabaseService {
         $taskDateOn INTEGER DEFAULT 0,
         $taskCreatedOn INTEGER DEFAULT 0,
         $taskUpdatedOn INTEGER DEFAULT 0,
-        $taskSoftDeletedOn INTEGER DEFAULT 0,  // ⬅️ Menggunakan nama baru
+        $taskSoftDeletedOn INTEGER DEFAULT 0,
         $taskColorTag INTEGER DEFAULT 0,
         $taskIsPinned INTEGER DEFAULT 0,
         $taskSyncStatus INTEGER DEFAULT 0
@@ -140,7 +142,8 @@ class DatabaseService {
     final db = await database;
 
     // ⬅️ Menggunakan konstanta nama kolom baru
-    const String whereClause = '$taskSoftDeletedOn IS NULL OR $taskSoftDeletedOn = 0'; 
+    const String whereClause =
+        '$taskSoftDeletedOn IS NULL OR $taskSoftDeletedOn = 0';
 
     return await db.query(
       taskTable,
@@ -177,7 +180,9 @@ class DatabaseService {
     final db = await database;
     return await db.update(
       taskTable,
-      {taskSoftDeletedOn: DateTime.now().millisecondsSinceEpoch}, // ⬅️ Menggunakan nama baru
+      {
+        taskSoftDeletedOn: DateTime.now().millisecondsSinceEpoch,
+      }, // ⬅️ Menggunakan nama baru
       where: '$taskId = ?',
       whereArgs: [id],
     );

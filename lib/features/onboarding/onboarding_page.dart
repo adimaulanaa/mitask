@@ -6,8 +6,10 @@ import 'package:mitask/core/storage/storage_provider.dart';
 import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/onboarding/name_input_page.dart';
 import 'package:mitask/features/onboarding/onboarding_content.dart';
+import 'package:mitask/features/services/database_service.dart';
 import 'package:mitask/navigator_page.dart';
 import 'package:mitask/services_locator.dart';
+import 'package:sqflite/sqflite.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -47,10 +49,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
-  void _finishOnboarding() {
+  void _finishOnboarding() async {
     final name = nameController.text.trim();
     storage.displayName = name;
+
+    // STEP 1 — Clear old database (only once, during onboarding finish)
+    final dbPath = await getDatabasesPath();
+    final path = '$dbPath/mitask_database.db';
+
+    await DatabaseService().closeDatabase(); // tutup koneksi
+    await deleteDatabase(path); // hapus database lama
+
+    // STEP 2 — Mark as initialized → app won’t reset DB again next launch
     storage.isInitialization = true;
+
+    // STEP 3 — Navigate to home
+    // ignore: use_build_context_synchronously
     context.pushAndRemoveUntilPage(
       const NavigatorPage(),
       type: TransitionType.slide,
