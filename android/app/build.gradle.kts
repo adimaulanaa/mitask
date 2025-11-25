@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 // --- BAGIAN INI DIUBAH UNTUK KOTLIN DSL ---
@@ -72,4 +73,12 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Firebase BOM (versi paling recommended)
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+
+    // Firebase Analytics (opsional tapi recommended)
+    implementation("com.google.firebase:firebase-analytics")
 }

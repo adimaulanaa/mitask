@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "715079088355",
+    "project_id": "mitask-6b25a",
+    "storage_bucket": "mitask-6b25a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715079088355:android:c17c2af52527555b85add6",
+        "android_client_info": {
+          "package_name": "com.bantraka.mitask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADFYBX3l0i9AmvftFwNG8mDq99EGlWpxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -7,10 +8,14 @@ import 'package:mitask/features/dashboard/presentation/bloc/dashboard_bloc.dart'
 import 'package:mitask/features/report/presentation/bloc/report_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/onboarding/splash_screen.dart';
+import 'package:mitask/firebase_options.dart';
 import 'package:mitask/services_locator.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await AppInfo.init();
   await di.init();
   final GetIt getIt = GetIt.instance;
