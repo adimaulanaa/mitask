@@ -1,0 +1,20 @@
+default_platform(:android)
+
+platform :android do
+  
+  desc "Build & upload to Firebase App Distribution"
+  lane :firebase do
+    gradle(
+      task: "assemble",
+      build_type: "Release"
+    )
+
+    firebase_app_distribution(
+      app: "1:715079088355:android:c17c2af52527555b85add6",
+      release_notes: "New build uploaded via Fastlane",
+      firebase_cli_token: ENV["FIREBASE_TOKEN_STAGING"],
+      apk_path: "../build/app/outputs/flutter-apk/app-release.apk"
+    )
+  end
+
+end

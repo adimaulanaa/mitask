@@ -15,7 +15,9 @@
 .PHONY: \
   debug \
   release \
-  update_icons
+  update_icons \
+  release_fastlane \
+  release_fastlanes
 
 # ============================================================================
 # 📦 ANDROID BUILD APK
@@ -43,3 +45,10 @@ aab:
 	@fvm flutter clean
 	@fvm flutter pub get
 	@fvm flutter build appbundle --release
+
+# 🔥 Release APK via Fastlane → Upload Firebase App Distribution
+release_fastlane:
+	@fvm flutter clean
+	@fvm flutter pub get
+	@fvm flutter build apk --release
+	@cd android && fastlane firebase && cd ..
