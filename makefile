@@ -37,3 +37,9 @@ release:
 update_icons:
 	@fvm flutter pub get
 	@fvm flutter pub run flutter_launcher_icons:main
+
+# 🔸 Release APK .AAB
+aab:
+	@fvm flutter clean
+	@fvm flutter pub get
+	@fvm flutter build appbundle --release
