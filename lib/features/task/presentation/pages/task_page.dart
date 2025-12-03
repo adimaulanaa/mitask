@@ -13,8 +13,10 @@ import 'package:mitask/core/utils/date_utils.dart';
 import 'package:mitask/core/utils/empty_list.dart';
 import 'package:mitask/core/utils/page_route.dart';
 import 'package:mitask/features/task/domain/entities/task_entity.dart';
+import 'package:mitask/features/task/domain/entities/task_filter_state.dart';
 import 'package:mitask/features/task/domain/usecases/params/checklist_task_params.dart';
 import 'package:mitask/features/task/domain/usecases/params/task_filter_params.dart';
+import 'package:mitask/features/task/domain/usecases/logic/select_task_filter_usecase.dart';
 import 'package:mitask/features/task/presentation/bloc/task_bloc.dart';
 import 'package:mitask/features/task/presentation/bloc/task_event.dart';
 import 'package:mitask/features/task/presentation/bloc/task_state.dart';
@@ -33,6 +35,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late TaskBloc _taskBloc;
+  final selectFilterUseCase = SelectTaskFilterUseCase();
   final TextEditingController searchCtr = TextEditingController();
   final TextEditingController startDateCtr = TextEditingController();
   final TextEditingController endDateCtr = TextEditingController();
@@ -40,10 +43,7 @@ class _TaskPageState extends State<TaskPage> {
   List<TaskEntity> _filterTaskData = [];
   bool isNotLoading = false;
   bool isFilter = false;
-  bool isAll = true;
-  bool isPin = false;
-  bool isFav = false;
-  bool isArch = false;
+  TaskFilterState currentFilter = TaskFilterState.initial;
 
   @override
   void initState() {
@@ -54,7 +54,6 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Catatan: SizedBox(height: size.height * 0.08)
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: null,
@@ -175,9 +174,9 @@ class _TaskPageState extends State<TaskPage> {
   void filterData() {
     TaskFilterParams currentParams = TaskFilterParams(
       query: searchCtr.text.trim(),
-      isPin: isPin,
-      isFav: isFav,
-      isArch: isArch,
+      isPin: currentFilter.isPin,
+      isFav: currentFilter.isFav,
+      isArch: currentFilter.isArch,
       startDate: parseDate(startDateCtr.text),
       endDate: parseDate(endDateCtr.text),
     );
@@ -247,36 +246,36 @@ class _TaskPageState extends State<TaskPage> {
           children: [
             BoxTypeAllFilter(
               text: 'All',
-              active: isAll,
+              active: currentFilter.isAll,
               onTap: () {
-                selectTpye(0);
+                selectType(0);
                 filterData();
               },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.pinned,
-              active: isPin,
+              active: currentFilter.isPin,
               onTap: () {
-                selectTpye(1);
+                selectType(1);
                 filterData();
               },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.favorite,
-              active: isFav,
+              active: currentFilter.isFav,
               onTap: () {
-                selectTpye(2);
+                selectType(2);
                 filterData();
               },
             ),
             SizedBox(width: 10),
             BoxTypeFilter(
               icons: MediaRes.archived,
-              active: isArch,
+              active: currentFilter.isArch,
               onTap: () {
-                selectTpye(3);
+                selectType(3);
                 filterData();
               },
             ),
@@ -299,10 +298,12 @@ class _TaskPageState extends State<TaskPage> {
             CustomInkWell(
               onTap: () {
                 setState(() {
-                  isAll = true;
-                  isPin = false;
-                  isFav = false;
-                  isArch = false;
+                  currentFilter = currentFilter.copyWith(
+                    isAll: true,
+                    isPin: false,
+                    isFav: false,
+                    isArch: false,
+                  );
                   startDateCtr.clear();
                   endDateCtr.clear();
                   isFilter = !isFilter;
@@ -324,25 +325,18 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  void selectTpye(int idx) {
-    if (idx == 0) {
-      isAll = true;
-      isPin = false;
-      isFav = false;
-      isArch = false;
-    } else if (idx == 1) {
-      isPin = !isPin;
-      isAll = false;
-    } else if (idx == 2) {
-      isFav = !isFav;
-      isAll = false;
-    } else if (idx == 3) {
-      isArch = !isArch;
-      isAll = false;
-    }
-    if (!isPin && !isFav && !isArch) {
-      isAll = true;
-    }
+  void selectType(int idx) {
+    // Panggil usecase → hasil state baru
+    final result = selectFilterUseCase(currentFilter, idx);
+
+    // Update UI state dengan immutable pattern
+    currentFilter = currentFilter.copyWith(
+      isAll: result.isAll,
+      isPin: result.isPin,
+      isFav: result.isFav,
+      isArch: result.isArch,
+    );
+
     setState(() {});
   }
 }
